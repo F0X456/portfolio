@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belal Ahmed — 0xbarood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a1f;
+    --bg-soft:#11112b;
+    --card:#151533;
+    --line:#31316b;
+    --text:#eef0ff;
+    --muted:#9a9ac8;
+    --accent:#7c5cff;      /* neon violet */
+    --accent-2:#4fd8ff;    /* neon cyan */
+    --mono:'IBM Plex Mono', monospace;
+    --display:'Anton', sans-serif;
+    --body:'Inter', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124,92,255,.18), transparent),
+      var(--bg);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:var(--body);
+    overflow-x:hidden;
+    position:relative;
+    cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="5" fill="none" stroke="%234fd8ff" stroke-width="1.5"/><circle cx="14" cy="14" r="1.6" fill="%234fd8ff"/></svg>') 14 14, auto;
+  }
+  a, button, .card, .social-btn, .tool-badge{
+    cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="8" fill="none" stroke="%237c5cff" stroke-width="1.6"/><circle cx="15" cy="15" r="2.2" fill="%237c5cff"/></svg>') 15 15, pointer;
+  }
+  #starfield{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .star{
+    position:absolute;background:#fff;border-radius:50%;
+    animation:twinkle linear infinite, drift linear infinite;
+  }
+  @keyframes twinkle{0%,100%{opacity:.15;}50%{opacity:1;}}
+  @keyframes drift{from{transform:translate(0,0);}to{transform:translate(-60px,40px);}}
+  header, .hero, .section, footer{position:relative;z-index:1;}
+  ::selection{background:var(--accent);color:#fff;}
+
+  /* ---------- utility ---------- */
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent-2);
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:18px;
+    text-shadow:0 0 12px rgba(79,216,255,.5);
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--accent-2);display:inline-block;box-shadow:0 0 8px var(--accent-2);}
+  .section{padding:110px 0;position:relative;opacity:0;transform:translateY(40px);transition:opacity .9s ease, transform .9s ease;}
+  .section.in-view{opacity:1;transform:translateY(0);}
+  .section-title{
+    font-family:var(--display);
+    font-weight:400;
+    font-size:clamp(32px,5vw,56px);
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    line-height:1.05;
+    margin-bottom:50px;
+    text-shadow:0 0 24px rgba(124,92,255,.45);
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    background:rgba(11,11,12,.75);
+    -webkit-backdrop-filter:blur(10px);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{display:flex;align-items:center;justify-content:space-between;height:76px;}
+  .brand{display:flex;align-items:baseline;gap:10px;}
+  .brand-name{font-family:var(--display);font-size:17px;letter-spacing:.03em;text-transform:uppercase;}
+  .brand-tag{
+    font-family:var(--mono);font-size:12px;color:var(--accent);
+    border:1px solid var(--accent);padding:2px 8px;border-radius:100px;
+  }
+  nav ul{list-style:none;display:flex;gap:34px;align-items:center;}
+  nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:color .25s;}
+  nav a:hover{color:var(--text);}
+  .nav-social{display:flex;gap:14px;align-items:center;}
+  .nav-social a{color:var(--muted);display:flex;transition:color .25s, transform .25s;}
+  .nav-social a:hover{color:var(--accent-2);transform:scale(1.15);}
+  .nav-toggle{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;}
+  @media(max-width:760px){
+    nav ul{position:fixed;top:76px;left:0;right:0;background:var(--bg-soft);flex-direction:column;
+      padding:20px 24px;gap:18px;border-bottom:1px solid var(--line);
+      transform:translateY(-140%);transition:transform .3s ease;}
+    nav ul.open{transform:translateY(0);}
+    .nav-toggle{display:block;}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+    padding-top:76px;position:relative;overflow:hidden;
+  }
+  .planet{
+    position:absolute;bottom:-30vh;left:50%;transform:translateX(-50%);
+    width:60vh;height:60vh;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, rgba(124,92,255,.5), var(--bg-soft) 55%, var(--bg) 80%);
+    box-shadow:0 0 100px 40px rgba(79,216,255,.2), inset 0 0 80px rgba(0,0,0,.4);
+    z-index:0;
+  }
+  .planet::before{
+    content:"";position:absolute;inset:-6px;border-radius:50%;
+    box-shadow:0 0 24px 3px rgba(79,216,255,.2);
+  }
+  .hero::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:110px;
+    background:linear-gradient(180deg, transparent, var(--bg) 100%);
+    pointer-events:none;z-index:1;
+  }
+  .corner-ui{
+    position:absolute;bottom:40px;display:flex;flex-direction:column;align-items:center;
+    gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--text);z-index:2;
+  }
+  .corner-ui.left{left:24px;}
+  .corner-ui.right{right:24px;}
+  .corner-ui .ring{
+    width:34px;height:34px;border-radius:50%;border:1px solid var(--accent-2);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 14px rgba(79,216,255,.4);
+  }
+  .tool-badge{
+    position:absolute;width:72px;height:72px;border-radius:18px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-weight:600;font-size:16px;letter-spacing:.02em;
+    color:#fff;user-select:none;
+    transition:transform .6s cubic-bezier(.16,1,.3,1), box-shadow .3s;
+    animation:float 7s ease-in-out infinite;
+    z-index:2;
+  }
+  .tool-badge:hover{transform:scale(1.12) !important; animation-play-state:paused;}
+  .tool-badge::after{
+    content:"";position:absolute;inset:-18px;border-radius:26px;z-index:-1;
+    filter:blur(20px);opacity:.55;
+  }
+  .tool-badge.premiere{
+    background:linear-gradient(160deg,var(--bg-soft),var(--accent) 55%,var(--accent-2));
+    top:12%; left:8%;
+    animation-delay:0s;
+  }
+  .tool-badge.premiere::after{ background:var(--accent); }
+  .tool-badge.premiere img{ width:100% !important; height:100% !important; max-width:100%; max-height:100%; object-fit:contain; position:relative; z-index:1; border-radius:18px; display:block; }
+  .tool-badge.capcut{
+    background:#ffffff;
+    padding:14px;
+    top:58%; left:5%;
+    animation-delay:1.2s;
+  }
+  .tool-badge.capcut::after{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); }
+  .tool-badge.capcut img{ width:100%; height:100%; object-fit:contain; position:relative; z-index:1; }
+  .tool-badge.reels{
+    background:linear-gradient(160deg,var(--accent),var(--accent-2));
+    top:20%; right:8%; left:auto;
+    animation-delay:2.4s;
+  }
+  .tool-badge.reels::after{ background:var(--accent-2); }
+  .tool-badge .icon-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:100%;height:100%;}
+  .tool-badge.dodging{ animation-play-state:paused; transition:left .55s cubic-bezier(.16,1,.3,1), top .55s cubic-bezier(.16,1,.3,1), transform .55s cubic-bezier(.16,1,.3,1); }
+  @keyframes float{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-14px) rotate(-3deg); }
+  }
+  @media(max-width:760px){ .tool-badge{ display:none; } }
+  .hero-role{font-family:var(--mono);color:var(--muted);font-size:14px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:22px;}
+  .hero h1{
+    font-family:var(--display);
+    font-size:clamp(34px,6vw,72px);
+    line-height:1.05;
+    text-transform:uppercase;
+    white-space:normal;
+    text-shadow:0 0 30px rgba(124,92,255,.35);
+  }
+  .hero h1 .accent{color:var(--accent);}
+  .hero-sub{
+    max-width:560px;color:var(--muted);font-size:16px;line-height:1.7;margin-top:26px;
+  }
+  .hero-cta{display:flex;gap:16px;margin-top:40px;flex-wrap:wrap;}
+  .btn{
+    font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;
+    padding:14px 26px;border-radius:2px;text-decoration:none;transition:.25s;
+    display:inline-flex;align-items:center;gap:10px;cursor:pointer;border:1px solid transparent;
+  }
+  .btn-primary{background:var(--accent);color:#fff;font-weight:600;box-shadow:0 0 20px rgba(124,92,255,.4);}
+  .btn-primary:hover{background:var(--accent-2);color:#0a0a1f;}
+  .btn-ghost{border-color:var(--line);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--accent-2);color:var(--accent-2);}
+
+  /* ---------- about ---------- */
+  .about-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:start;}
+  @media(max-width:800px){.about-grid{grid-template-columns:1fr;}}
+  .avatar{
+    aspect-ratio:1/1;background:var(--card);
+    position:relative;overflow:hidden;
+  }
+  .avatar img{
+    width:100%;height:100%;object-fit:cover;object-position:top center;
+    filter:grayscale(35%) contrast(1.05);
+    transition:filter .4s;
+  }
+  .avatar:hover img{filter:grayscale(0%) contrast(1.1);}
+  .avatar::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,transparent 55%,rgba(11,11,12,.85) 100%);
+    pointer-events:none;
+  }
+  .avatar-tag{
+    position:absolute;bottom:14px;left:14px;z-index:2;
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent-2);
+  }
+  .about p{color:var(--muted);line-height:1.9;font-size:19px;margin-bottom:18px;font-family:var(--mono);font-weight:400;}
+  .skills{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px;align-items:center;}
+  .skill{
+    font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent-2);text-shadow:0 0 10px rgba(79,216,255,.4);
+  }
+  .skill:not(:last-child)::after{content:"/";color:var(--line);margin-inline-start:14px;}
+
+  /* ---------- work grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:600px){.grid{grid-template-columns:1fr;}}
+  .card{
+    background:rgba(21,21,51,.5);border:1px solid var(--line);cursor:pointer;
+    transition:transform .3s, border-color .3s, box-shadow .3s;position:relative;overflow:hidden;
+    backdrop-filter:blur(2px);
+  }
+  .card:hover{transform:translateY(-6px);border-color:var(--accent-2);box-shadow:0 0 30px rgba(79,216,255,.25);}
+  .card-thumb{
+    aspect-ratio:16/9;position:relative;
+    background:
+      repeating-linear-gradient(90deg, rgba(124,92,255,.10) 0 2px, transparent 2px 26px),
+      repeating-linear-gradient(90deg, rgba(79,216,255,.08) 0 1px, transparent 1px 14px),
+      linear-gradient(135deg,#1c1c40,#0e0e22);
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  .card-thumb img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    filter:brightness(.75);transition:filter .3s, transform .3s;
+  }
+  .card:hover .card-thumb img{filter:brightness(.5);transform:scale(1.05);}
+  .card-thumb .play-icon{position:relative;z-index:1;}
+  .play-icon{
+    width:54px;height:54px;border-radius:50%;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--text);
+    transition:.3s;
+  }
+  .card:hover .play-icon{background:var(--accent-2);border-color:var(--accent-2);color:#0a0a1f;transform:scale(1.1);box-shadow:0 0 20px rgba(79,216,255,.6);}
+  .card-body{padding:18px 20px;}
+  .card-tag{font-family:var(--mono);font-size:11px;color:var(--accent-2);letter-spacing:.1em;text-transform:uppercase;}
+  .card-title{font-size:16px;font-weight:600;margin-top:8px;}
+
+  /* ---------- contact ---------- */
+  .contact{
+    display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+  }
+  .contact-links{display:flex;gap:18px;margin-top:36px;flex-wrap:wrap;}
+  .social-btn{
+    display:flex;align-items:center;gap:0;
+    border:1px solid var(--line);border-radius:100px;overflow:hidden;
+    text-decoration:none;color:var(--text);height:58px;
+    transition:border-color .3s, background .3s;
+  }
+  .social-btn .icon-box{
+    width:58px;height:58px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .social-btn .label{
+    max-width:0;overflow:hidden;white-space:nowrap;
+    font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.06em;
+    transition:max-width .35s ease, padding .35s ease;
+  }
+  .social-btn:hover{border-color:var(--accent-2);box-shadow:0 0 24px rgba(79,216,255,.3);}
+  .social-btn:hover .label{max-width:160px;padding-left:2px;padding-right:18px;}
+  .social-btn.ig:hover{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0a0a1f;}
+  .social-btn.wa:hover{background:linear-gradient(135deg,var(--accent-2),var(--accent));color:#0a0a1f;}
+
+  footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;}
+
+  /* ---------- lightbox ---------- */
+  .lightbox{
+    position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;
+    display:none;align-items:center;justify-content:center;padding:24px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox-inner{width:100%;max-width:900px;}
+  .lightbox-frame{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:1px solid var(--line);}
+  .lightbox-frame iframe{width:100%;height:100%;border:0;}
+  .lightbox-close{
+    margin-bottom:14px;background:none;border:1px solid var(--line);color:var(--text);
+    font-family:var(--mono);font-size:12px;padding:8px 16px;border-radius:100px;cursor:pointer;float:left;
+  }
+  .lightbox-close:hover{border-color:var(--accent);color:var(--accent);}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .card:hover, .social-btn:hover .label{transition:none;}
+    .star{animation:none !important;}
+    .section{opacity:1 !important;transform:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="starfield"></div>
+
+<header>
+  <nav class="wrap">
+    <div class="brand">
+      <span class="brand-name">Belal Ahmed</span>
+      <span class="brand-tag">0xbarood</span>
+    </div>
+    <button class="nav-toggle" id="navToggle">☰</button>
+    <ul id="navList">
+      <li><a href="#about">عني</a></li>
+      <li><a href="#reels">ريلز</a></li>
+      <li><a href="#contact">تواصل</a></li>
+      <li class="nav-social">
+        <a href="https://www.instagram.com/belalghanem3/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        </a>
+        <a href="https://wa.me/201157124293" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.91-2.2-.24-.58-.48-.5-.67-.5h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35zM12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.15 8.15 0 0 1-1.25-4.38c0-4.5 3.66-8.16 8.25-8.16 4.58 0 8.24 3.66 8.24 8.16 0 4.5-3.66 8.24-8.25 8.24z"/></svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero" id="heroSection">
+  <div class="planet"></div>
+  <div class="tool-badge premiere" id="badgePr"><img src="premier.png" alt="premier"></div>
+  <div class="tool-badge capcut" id="badgeCC"><img src="capcut-icon.png" alt="CapCut"></div>
+  <div class="tool-badge reels" id="badgeReels"><span class="icon-inner">▶</span></div>
+  <div class="wrap" style="position:relative;z-index:2;">
+    <div style="max-width:640px;">
+      <div class="hero-role">/// Video Editor — Premiere · CapCut</div>
+      <h1>BELAL AHMED <span class="accent">//</span> 0x<span class="accent">BAROOD</span></h1>
+      <p class="hero-sub">Editing Reels and short-form video with Adobe Premiere Pro and CapCut — fast, sharp, built to be watched.</p>
+      <div class="hero-cta">
+        <a href="#reels" class="btn btn-primary">شوف الشغل</a>
+        <a href="#contact" class="btn btn-ghost">تواصل معايا</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section about" id="about">
+  <div class="wrap">
+    <div class="eyebrow">00:00:01 — عني</div>
+    <div class="about-grid">
+      <div class="avatar">
+        <img src="profile.jpg" alt="Belal Ahmed">
+        <span class="avatar-tag">Belal Ahmed / 0xbarood</span>
+      </div>
+      <div class="about">
+        <p>I'm Belal Ahmed, a video editor working across Adobe Premiere Pro and CapCut. I specialize in CapCut, where I work with speed and precision, and bring the same craft to Premiere — focused on Reels and short-form video content built to stop the scroll.</p>
+        <div class="skills">
+          <span class="skill">Adobe Premiere Pro</span>
+          <span class="skill">CapCut</span>
+          <span class="skill">Reels Editing</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="reels">
+  <div class="wrap">
+    <div class="eyebrow">00:00:02 — ريلز</div>
+    <h2 class="section-title">Reels</h2>
+    <div class="grid" id="reelsGrid"></div>
+  </div>
+</section>
+
+<section class="section" id="contact" style="background:var(--bg-soft);">
+  <div class="wrap contact">
+    <div class="eyebrow">00:00:03 — تواصل</div>
+    <h2 class="section-title">Let's Work<br>Together</h2>
+    <p style="color:var(--muted);max-width:480px;">عندك فيديو محتاج مونتاج؟ ابعتلي رسالة على واتساب أو تابعني على إنستجرام.</p>
+    <div class="contact-links">
+      <a class="social-btn ig" href="https://www.instagram.com/belalghanem3/" target="_blank" rel="noopener">
+        <span class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        </span>
+        <span class="label">Instagram</span>
+      </a>
+      <a class="social-btn wa" href="https://wa.me/201157124293" target="_blank" rel="noopener">
+        <span class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2z" opacity="0"/><path d="M17.47 14.38c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.91-2.2-.24-.58-.48-.5-.67-.5h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35z"/></svg>
+        </span>
+        <span class="label">WhatsApp</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>© <span id="year"></span> Belal Ahmed / 0xbarood — All work protected</footer>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightboxClose">✕ إغلاق</button>
+    <div class="lightbox-frame" id="lightboxFrame"></div>
+  </div>
+</div>
+
+<script>
+  // ================== DATA — عدّل هنا لما تجهز اللينكات ==================
+  // driveId: خد الـ FILE_ID من لينك جوجول درايف بتاعك
+  // مثال لينك درايف: https://drive.google.com/file/d/FILE_ID_HERE/view
+  const reels = [
+    { title: "Reel 01", driveId: "14kDnj5M63POuIllcbHuX76vufbPfUWjR" },
+    { title: "Reel 02", driveId: "1q79zVva-MSrJ6WE3curSdR7uqJlKJjiT" },
+    { title: "Reel 03", driveId: "1PuzqbBYV8Uny4hLNrtN8ORFeilNIbtN_" },
+    { title: "Reel 04", driveId: "1bEQajj7rBLnQ_js2biaqsxDfLCuGsS7r" },
+    { title: "Reel 05", driveId: "1PrZbGOsu9EX-R1KkAZaa2OJZOX90bzgz" },
+    { title: "Reel 06", driveId: "1tPM9fTu7ANJXvhwe2_c6-_LOTIDB3j0x" },
+    { title: "Reel 07", driveId: "1t9SjQMQzqxalTR30W8AWg1eIpxwqUJLj" },
+    { title: "Reel 08", driveId: "1eiFbDHoJ0xMUuhGVCZ59Zn29MVbUzBvL" },
+  ];
+
+  function playIconSVG(){
+    return `<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+  }
+
+  function renderGrid(containerId, items, tagLabel){
+    const el = document.getElementById(containerId);
+    el.innerHTML = items.map((item, i) => `
+      <div class="card" data-drive="${item.driveId}">
+        <div class="card-thumb">
+          <img src="https://drive.google.com/thumbnail?id=${item.driveId}&sz=w800"
+               alt="${item.title}"
+               loading="lazy"
+               onerror="this.remove()">
+          <div class="play-icon">${playIconSVG()}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-tag">${tagLabel} — ${String(i+1).padStart(2,'0')}</div>
+          <div class="card-title">${item.title}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  renderGrid('reelsGrid', reels, 'Reel');
+
+  // lightbox logic — الفيديو بيتفتح جوه نفس الصفحة
+  const lightbox = document.getElementById('lightbox');
+  const lightboxFrame = document.getElementById('lightboxFrame');
+
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = card.getAttribute('data-drive');
+      lightboxFrame.innerHTML = `<iframe src="https://drive.google.com/file/d/${id}/preview" allow="autoplay" allowfullscreen></iframe>`;
+      lightbox.classList.add('open');
+    });
+  });
+
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    lightboxFrame.innerHTML = '';
+  }
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+
+  // scroll reveal — فركة بين كل قسم والتاني
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.section').forEach(sec => revealObserver.observe(sec));
+
+  // dense animated starfield
+  (function(){
+    const field = document.getElementById('starfield');
+    const count = 160;
+    for (let i = 0; i < count; i++){
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.4 + 0.6;
+      s.style.width = size + 'px';
+      s.style.height = size + 'px';
+      s.style.top = Math.random() * 100 + '%';
+      s.style.left = Math.random() * 100 + '%';
+      s.style.opacity = (Math.random() * .6 + .3).toFixed(2);
+      s.style.animationDuration = (Math.random() * 3 + 2.5) + 's, ' + (Math.random() * 40 + 50) + 's';
+      s.style.animationDelay = (Math.random() * 4) + 's, ' + (Math.random() * -60) + 's';
+      field.appendChild(s);
+    }
+  })();
+  const heroSection = document.getElementById('heroSection');
+  const badges = [document.getElementById('badgePr'), document.getElementById('badgeCC'), document.getElementById('badgeReels')];
+  const isDodging = new WeakMap();
+
+  function dodgeToRandomSpot(badge, rect){
+    const bw = badge.offsetWidth, bh = badge.offsetHeight;
+    const margin = 16;
+    const maxX = Math.max(rect.width - bw - margin * 2, 0);
+    const maxY = Math.max(rect.height - bh - margin * 2, 0);
+    const x = margin + Math.random() * maxX;
+    const y = margin + Math.random() * maxY;
+    badge.classList.add('dodging');
+    badge.style.left = x + 'px';
+    badge.style.top = y + 'px';
+    badge.style.right = 'auto';
+    badge.style.transform = 'rotate(' + (Math.random() * 24 - 12).toFixed(1) + 'deg)';
+  }
+
+  if (heroSection && window.matchMedia('(min-width:761px)').matches){
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      badges.forEach(badge => {
+        const b = badge.getBoundingClientRect();
+        const bx = b.left - rect.left + b.width / 2;
+        const by = b.top - rect.top + b.height / 2;
+        const dist = Math.hypot(mx - bx, my - by);
+        if (dist < 130 && !isDodging.get(badge)){
+          isDodging.set(badge, true);
+          dodgeToRandomSpot(badge, rect);
+        } else if (dist > 190){
+          isDodging.set(badge, false);
+        }
+      });
+    });
+    heroSection.addEventListener('mouseleave', () => {
+      badges.forEach(b => isDodging.set(b, false));
+    });
+  }
+
+  const navToggle = document.getElementById('navToggle');
+  const navList = document.getElementById('navList');
+  navToggle.addEventListener('click', () => navList.classList.toggle('open'));
+  navList.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navList.classList.remove('open')));
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
