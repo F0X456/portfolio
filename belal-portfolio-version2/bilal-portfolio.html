@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belal Ahmed — Video Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08090c;
+    --bg-elevated:#0d1015;
+    --card:#12151b;
+    --card-2:#161a21;
+    --border:rgba(255,255,255,.08);
+    --border-soft:rgba(255,255,255,.05);
+    --text:#f5f6f7;
+    --muted:#9aa0a8;
+    --muted-2:#6b7078;
+    --accent:#ff5a1f;
+    --accent-2:#ff8a3d;
+    --accent-glow:rgba(255,90,31,.35);
+    --radius:16px;
+    --font-display:'Plus Jakarta Sans', sans-serif;
+    --font-body:'Inter', sans-serif;
+  }
+  html.lang-ar{ --font-display:'Cairo', sans-serif; --font-body:'Cairo', sans-serif; }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  html[dir="rtl"] body{direction:rtl;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px;}
+  section{position:relative;}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  .stagger .reveal:nth-child(1){transition-delay:.05s;}
+  .stagger .reveal:nth-child(2){transition-delay:.15s;}
+  .stagger .reveal:nth-child(3){transition-delay:.25s;}
+  .stagger .reveal:nth-child(4){transition-delay:.35s;}
+  .stagger .reveal:nth-child(5){transition-delay:.45s;}
+  .stagger .reveal:nth-child(6){transition-delay:.55s;}
+  .stagger .reveal:nth-child(7){transition-delay:.65s;}
+  .stagger .reveal:nth-child(8){transition-delay:.75s;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+
+  /* ---------- navbar ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:18px 0;
+    transition:background .35s ease, padding .35s ease, border-color .35s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    background:rgba(8,9,12,.75);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+  }
+  nav{display:flex;align-items:center;justify-content:space-between;gap:20px;}
+  .logo{font-family:var(--font-display);font-weight:800;font-size:19px;letter-spacing:.02em;display:flex;align-items:center;gap:6px;}
+  .logo .dot{color:var(--accent);}
+  .nav-links{display:flex;gap:34px;align-items:center;}
+  .nav-links a{font-size:14px;color:var(--muted);font-weight:500;transition:color .25s ease;position:relative;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-links a.active{color:var(--text);}
+  .nav-right{display:flex;align-items:center;gap:14px;}
+  .lang-switch{
+    display:flex;align-items:center;background:var(--card);border:1px solid var(--border);
+    border-radius:999px;padding:3px;font-size:12px;font-weight:600;color:var(--muted);
+  }
+  .lang-switch button{padding:6px 12px;border-radius:999px;transition:background .25s ease,color .25s ease;}
+  .lang-switch button.active{background:var(--accent);color:#fff;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 20px;border-radius:999px;font-size:14px;font-weight:600;
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--accent-2),var(--accent));color:#fff;box-shadow:0 8px 24px -8px var(--accent-glow);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px -6px var(--accent-glow);}
+  .btn-ghost{background:var(--card);border:1px solid var(--border);color:var(--text);}
+  .btn-ghost:hover{background:var(--card-2);transform:translateY(-2px);}
+  .btn svg{width:14px;height:14px;transition:transform .25s ease;}
+  .btn:hover svg{transform:translateX(3px);}
+  html[dir="rtl"] .btn:hover svg{transform:translateX(-3px) scaleX(-1);}
+  html[dir="rtl"] .btn svg{transform:scaleX(-1);}
+
+  .burger{display:none;width:36px;height:36px;border-radius:8px;background:var(--card);border:1px solid var(--border);align-items:center;justify-content:center;}
+  .burger span,.burger::before,.burger::after{display:none;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:190px 0 100px;
+    position:relative;
+    overflow:hidden;
+  }
+  .glow-arc{
+    position:absolute;
+    left:50%;top:230px;
+    width:900px;height:900px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:radial-gradient(circle at 50% 35%, var(--accent-2) 0%, var(--accent) 35%, rgba(255,90,31,.15) 55%, transparent 70%);
+    filter:blur(40px);
+    opacity:.55;
+    animation:pulse 6s ease-in-out infinite;
+    pointer-events:none;
+    z-index:0;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:.45; transform:translateX(-50%) scale(1);}
+    50%{opacity:.65; transform:translateX(-50%) scale(1.04);}
+  }
+  .spotlight{
+    position:absolute; inset:0; pointer-events:none; z-index:1;
+    background:radial-gradient(600px circle at var(--x,50%) var(--y,20%), rgba(255,255,255,.06), transparent 60%);
+  }
+  .hero-inner{position:relative;z-index:2;text-align:center;}
+  .badge{
+    display:inline-flex;align-items:center;
+    background:linear-gradient(135deg,var(--accent-2),var(--accent));
+    color:#fff;font-weight:700;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;
+    padding:9px 22px;border-radius:999px;
+    margin-bottom:28px;
+    box-shadow:0 8px 22px -8px var(--accent-glow);
+  }
+  h1.headline{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:clamp(38px,6.4vw,72px);
+    line-height:1.08;
+    letter-spacing:-.01em;
+    margin-bottom:22px;
+  }
+  h1.headline .accent{color:var(--accent);}
+  .sub{
+    max-width:560px;margin:0 auto 36px;
+    color:var(--muted);font-size:17px;line-height:1.65;
+  }
+  .hero-btns{display:flex;gap:14px;justify-content:center;margin-bottom:76px;}
+
+  /* hero visual mockup */
+  .mock{
+    position:relative;z-index:2;
+    max-width:940px;margin:0 auto;
+    background:var(--bg-elevated);
+    border:1px solid var(--border);
+    border-radius:20px;
+    box-shadow:0 40px 100px -30px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.02);
+    overflow:hidden;
+    transform:translateY(10px);
+  }
+  .mock-top{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 22px;border-bottom:1px solid var(--border);
+    font-size:13px;color:var(--muted);
+  }
+  .mock-top .m-logo{font-family:var(--font-display);font-weight:800;color:var(--text);font-size:14px;}
+  .mock-tabs{display:flex;gap:22px;}
+  .mock-tabs span{color:var(--muted);}
+  .mock-tabs span.on{color:var(--text);}
+  .mock-body{padding:26px;}
+  .player{
+    position:relative;border-radius:12px;overflow:hidden;
+    aspect-ratio:16/7.2;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,138,61,.35), transparent 55%),
+      linear-gradient(135deg,#1b1108,#0a0b0d 60%);
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--border-soft);
+  }
+  .play-btn{
+    width:64px;height:64px;border-radius:50%;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,.2);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .3s ease, background .3s ease;
+  }
+  .play-btn svg{width:20px;height:20px;fill:#fff;margin-left:3px;}
+  html[dir="rtl"] .play-btn svg{margin-left:0;margin-right:3px;}
+  .mock:hover .play-btn{transform:scale(1.08);background:var(--accent);}
+  .player iframe{width:100%;height:100%;border:0;position:absolute;inset:0;}
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px;}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+  .stat .k{font-size:11px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+  .stat .v{font-family:var(--font-display);font-weight:700;font-size:19px;}
+  .timeline{margin-top:18px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+  .tl-row{display:flex;gap:4px;height:26px;}
+  .tl-clip{border-radius:5px;height:100%;}
+  .timeline .caption{font-size:11px;color:var(--muted-2);margin-top:10px;display:flex;justify-content:space-between;}
+
+  /* ---------- section heading ---------- */
+  .eyebrow{
+    display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:14px;
+  }
+  .sec-head{max-width:600px;margin-bottom:52px;}
+  .sec-head.center{margin-left:auto;margin-right:auto;text-align:center;}
+  h2{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,4vw,40px);letter-spacing:-.01em;margin-bottom:14px;}
+  .sec-head p{color:var(--muted);font-size:16px;line-height:1.6;}
+
+  /* ---------- bento / services ---------- */
+  .services{padding:120px 0 20px;}
+  .bento{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .b-card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:26px;transition:transform .3s ease, border-color .3s ease, background .3s ease;
+    perspective:700px;
+  }
+  .b-card:hover{transform:translateY(-6px);border-color:rgba(255,90,31,.4);background:var(--card-2);}
+  .b-icon{
+    width:46px;height:46px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent-2),var(--accent));
+    display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+    box-shadow:0 8px 20px -8px var(--accent-glow);
+    transform-style:preserve-3d;
+    transition:transform .45s cubic-bezier(.2,.8,.2,1.2), box-shadow .4s ease;
+  }
+  .b-icon svg{width:22px;height:22px;fill:#fff;}
+  /* each tool gets its own distinct 3D pop on hover */
+  .b-card:nth-child(1):hover .b-icon{transform:translateZ(36px) rotateY(22deg) rotateX(6deg) scale(1.12);box-shadow:0 20px 34px -10px var(--accent-glow);}
+  .b-card:nth-child(2):hover .b-icon{transform:translateZ(36px) rotateX(22deg) rotateY(-6deg) scale(1.12);box-shadow:0 20px 34px -10px var(--accent-glow);}
+  .b-card:nth-child(3):hover .b-icon{transform:translateZ(36px) rotateY(-18deg) rotateZ(6deg) scale(1.14);box-shadow:0 20px 34px -10px var(--accent-glow);}
+  .b-card:nth-child(4):hover .b-icon{transform:translateZ(36px) rotateZ(-16deg) rotateX(-10deg) scale(1.16);box-shadow:0 20px 34px -10px var(--accent-glow);}
+  .b-card h3{font-family:var(--font-display);font-size:17px;font-weight:700;margin-bottom:10px;}
+  .b-card p{font-size:13.5px;color:var(--muted);line-height:1.6;}
+
+  /* ---------- about split ---------- */
+  .about{padding:130px 0;}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+  .about-text p.lead{color:var(--muted);font-size:16px;line-height:1.75;margin-bottom:26px;}
+  .checklist{display:flex;flex-direction:column;gap:14px;margin-bottom:30px;}
+  .checklist li{display:flex;align-items:center;gap:12px;font-size:14.5px;color:var(--text);}
+  .check{width:20px;height:20px;border-radius:6px;background:rgba(255,90,31,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .check svg{width:12px;height:12px;fill:none;stroke:var(--accent);stroke-width:3;}
+  .about-visual{position:relative;display:flex;align-items:center;justify-content:center;height:380px;}
+  .ring{
+    position:absolute;border-radius:50%;border:1px solid var(--border);
+  }
+  .ring.r1{width:380px;height:380px;}
+  .ring.r2{width:290px;height:290px;background:radial-gradient(circle at 50% 40%, rgba(255,90,31,.28), transparent 65%);border-color:rgba(255,90,31,.25);}
+  .ring.r3{width:200px;height:200px;background:radial-gradient(circle at 50% 40%, rgba(255,90,31,.5), transparent 70%);}
+  .about-visual .center-icon{
+    position:relative;z-index:2;width:78px;height:78px;border-radius:20px;
+    background:linear-gradient(135deg,var(--accent-2),var(--accent));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 20px 50px -12px var(--accent-glow);
+    animation:float 4.5s ease-in-out infinite;
+  }
+  .about-visual .center-icon svg{width:34px;height:34px;fill:#fff;}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
+  /* ---------- works ---------- */
+  .works{padding:20px 0 130px;}
+  .works-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .w-card{
+    position:relative;border-radius:var(--radius);overflow:hidden;
+    aspect-ratio:3/4;border:1px solid var(--border);
+    background:var(--card);
+    transition:transform .35s ease, border-color .35s ease;
+  }
+  .w-card:hover{transform:translateY(-6px);border-color:rgba(255,90,31,.4);}
+  .w-thumb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+  .w-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.85) 100%);}
+  .w-card{perspective:600px;}
+  .w-play{
+    position:relative;z-index:2;width:52px;height:52px;border-radius:50%;
+    background:rgba(255,255,255,.1);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .45s cubic-bezier(.2,.8,.2,1.2), background .3s ease;
+  }
+  .w-play svg{width:16px;height:16px;fill:#fff;margin-left:2px;}
+  .w-card:hover .w-play{transform:translateZ(30px) rotateY(18deg) scale(1.15);background:var(--accent);}
+  .w-ext{
+    position:absolute;top:14px;z-index:3;
+    width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.4);
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid rgba(255,255,255,.15);
+    opacity:0;transform:translateY(-6px);transition:opacity .3s ease, transform .3s ease;
+  }
+  html[dir="ltr"] .w-ext{right:14px;}
+  html[dir="rtl"] .w-ext{left:14px;}
+  .w-card:hover .w-ext{opacity:1;transform:translateY(0);}
+  .w-ext svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2;}
+  .w-label{position:absolute;bottom:16px;z-index:3;font-size:14px;font-weight:700;}
+  html[dir="ltr"] .w-label{left:18px;}
+  html[dir="rtl"] .w-label{right:18px;}
+  .w-label small{display:block;font-weight:500;font-size:11.5px;color:var(--muted);margin-top:3px;}
+  .w-card{cursor:pointer;}
+  .w-thumb-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85;transition:transform .5s ease, opacity .3s ease;}
+  .w-card:hover .w-thumb-img{transform:scale(1.08);opacity:1;}
+
+  /* ---------- video modal (in-site playback) ---------- */
+  .video-modal{
+    position:fixed;inset:0;z-index:1000;
+    display:none;align-items:center;justify-content:center;
+    background:rgba(4,5,7,.85);backdrop-filter:blur(8px);
+    padding:24px;
+    opacity:0;transition:opacity .3s ease;
+  }
+  .video-modal.open{display:flex;opacity:1;}
+  .video-modal-inner{
+    position:relative;width:100%;max-width:860px;
+    aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:0 40px 100px -20px rgba(0,0,0,.7);
+    transform:scale(.94);transition:transform .3s ease;
+  }
+  .video-modal.open .video-modal-inner{transform:scale(1);}
+  .video-modal-inner iframe{width:100%;height:100%;border:0;}
+  .video-modal-close{
+    position:absolute;top:-46px;right:0;
+    width:36px;height:36px;border-radius:50%;
+    background:var(--card);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    transition:background .25s ease, transform .25s ease;
+  }
+  html[dir="rtl"] .video-modal-close{right:auto;left:0;}
+  .video-modal-close:hover{background:var(--accent);transform:rotate(90deg);}
+  .video-modal-close svg{width:16px;height:16px;stroke:#fff;stroke-width:2;fill:none;}
+
+  /* ---------- CTA ---------- */
+  .cta-section{padding:20px 0 120px;}
+  .cta-box{
+    position:relative;border-radius:24px;overflow:hidden;
+    border:1px solid var(--border);
+    background:var(--bg-elevated);
+    padding:70px 40px;text-align:center;
+  }
+  .cta-glow{
+    position:absolute;bottom:-160px;left:50%;transform:translateX(-50%);
+    width:700px;height:340px;border-radius:50%;
+    background:radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    filter:blur(30px);opacity:.55;
+  }
+  .cta-box h2{position:relative;z-index:2;}
+  .cta-box p{position:relative;z-index:2;color:var(--muted);max-width:480px;margin:0 auto 34px;font-size:16px;}
+  .cta-btns{position:relative;z-index:2;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--border);padding:60px 0 30px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;margin-bottom:50px;}
+  .foot-brand p{color:var(--muted);font-size:14px;margin-top:12px;max-width:260px;line-height:1.6;}
+  .foot-col h4{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-2);margin-bottom:16px;}
+  .foot-col a, .foot-col span{display:block;font-size:14px;color:var(--muted);margin-bottom:10px;transition:color .25s ease;}
+  .foot-col a:hover{color:var(--text);}
+  .foot-bottom{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;font-size:13px;color:var(--muted-2);flex-wrap:wrap;gap:10px;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    .nav-links{display:none;}
+    .bento{grid-template-columns:repeat(2,1fr);}
+    .about-grid{grid-template-columns:1fr;gap:50px;}
+    .works-grid{grid-template-columns:repeat(2,1fr);}
+    .foot-grid{grid-template-columns:1fr;gap:30px;}
+    .stat-row{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:520px){
+    .hero{padding:150px 0 70px;}
+    .hero-btns{flex-direction:column;align-items:stretch;}
+    .mock-body{padding:16px;}
+    .works-grid{grid-template-columns:1fr 1fr;}
+    .glow-arc{width:600px;height:600px;top:200px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="spotlight" id="spotlight"></div>
+
+<header id="header">
+  <div class="wrap">
+    <nav>
+      <a href="#top" class="logo"><span data-en="BELAL Ahmed" data-ar=" بلال احمد">BELAL AHMED</span><span class="dot">.</span></a>
+      <div class="nav-links">
+        <a href="#top" class="active" data-en="Home" data-ar="الرئيسية">Home</a>
+        <a href="#works" data-en="Works" data-ar="الأعمال">Works</a>
+        <a href="#about" data-en="About" data-ar="عني">About</a>
+        <a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-switch">
+          <button id="btn-en" class="active">EN</button>
+          <button id="btn-ar">AR</button>
+        </div>
+        <a class="btn btn-primary" href="https://wa.me/201157124293" target="_blank" rel="noopener">
+          <span data-en="Let's Talk" data-ar="لنتحدث">Let's Talk</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="glow-arc"></div>
+  <div class="wrap hero-inner">
+    <div class="badge reveal" data-en="Portfolio" data-ar="بروتفوليو">Portfolio</div>
+    <h1 class="headline reveal">
+      <span data-en="Reels That Stop" data-ar="ريلز توقف">Reels That Stop</span><br>
+      <span class="accent" data-en="The Scroll." data-ar="التمرير.">The Scroll.</span>
+    </h1>
+    <p class="sub reveal" data-en="Belal Ahmed edits short-form video and Reels with Adobe Premiere Pro and CapCut — fast turnarounds, clean cuts, content built to hold attention." data-ar="بلال أحمد يحرّر فيديوهات الريلز والمحتوى القصير باستخدام Adobe Premiere Pro و CapCut — تسليم سريع، مونتاج نظيف، ومحتوى مصمم ليشد الانتباه من أول لحظة.">
+      Belal Ahmed edits short-form video and Reels with Adobe Premiere Pro and CapCut — fast turnarounds, clean cuts, content built to hold attention.
+    </p>
+    <div class="hero-btns reveal">
+      <a href="#works" class="btn btn-ghost">
+        <span data-en="View Work" data-ar="شاهد الأعمال">View Work</span>
+      </a>
+      <a href="https://wa.me/201157124293" target="_blank" rel="noopener" class="btn btn-primary">
+        <span data-en="Get In Touch" data-ar="تواصل معي">Get In Touch</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="mock reveal">
+      <div class="mock-top">
+        <span class="m-logo">BELAL AHMED<span style="color:var(--accent)">.</span></span>
+        <div class="mock-tabs">
+          <span class="on" data-en="Timeline" data-ar="الخط الزمني">Timeline</span>
+          <span data-en="Clips" data-ar="المقاطع">Clips</span>
+          <span data-en="Export" data-ar="التصدير">Export</span>
+        </div>
+        <span data-en="CapCut · Premiere Pro" data-ar="كابكت · بريمير برو">CapCut · Premiere Pro</span>
+      </div>
+      <div class="mock-body">
+        <!-- فيديو تعريفي: ده لينك درايف مؤقت، استبدله بلينك الفيديو التعريفي النهائي بتاعك -->
+        <div class="player">
+          <iframe id="intro-video" src="https://drive.google.com/file/d/14kDnj5M63POuIllcbHuX76vufbPfUWjR/preview" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><div class="k" data-en="Tools" data-ar="الأدوات">Tools</div><div class="v">Premiere</div></div>
+          <div class="stat"><div class="k" data-en="Tools" data-ar="الأدوات">Tools</div><div class="v">CapCut</div></div>
+          <div class="stat"><div class="k" data-en="Focus" data-ar="التخصص">Focus</div><div class="v" data-en="Reels" data-ar="ريلز">Reels</div></div>
+          <div class="stat"><div class="k" data-en="Turnaround" data-ar="التسليم">Turnaround</div><div class="v" data-en="Fast" data-ar="سريع">Fast</div></div>
+        </div>
+        <div class="timeline">
+          <div class="tl-row">
+            <div class="tl-clip" style="width:18%;background:var(--accent);"></div>
+            <div class="tl-clip" style="width:12%;background:#3a2114;"></div>
+            <div class="tl-clip" style="width:22%;background:var(--accent-2);"></div>
+            <div class="tl-clip" style="width:10%;background:#3a2114;"></div>
+            <div class="tl-clip" style="width:26%;background:var(--accent);"></div>
+            <div class="tl-clip" style="width:12%;background:#3a2114;"></div>
+          </div>
+          <div class="caption">
+            <span data-en="00:00" data-ar="٠٠:٠٠">00:00</span>
+            <span data-en="Ready to export" data-ar="جاهز للتصدير">Ready to export</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow" data-en="What I Do" data-ar="مجال العمل">What I Do</span>
+      <h2 data-en="Editing, Built Around Attention" data-ar="مونتاج مبني على جذب الانتباه">Editing, Built Around Attention</h2>
+    </div>
+    <div class="bento stagger">
+      <div class="b-card reveal">
+        <div class="b-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z" opacity=".35"/><path d="M8 20h8M12 16v4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+        <h3 data-en="Premiere Pro" data-ar="بريمير برو">Premiere Pro</h3>
+        <p data-en="Advanced color grading, multicam sync and precise pacing for long-form and narrative edits." data-ar="تصحيح ألوان متقدم، مزامنة كاميرات متعددة، وإيقاع دقيق للمونتاج الطويل والسردي.">Advanced color grading, multicam sync and precise pacing for long-form and narrative edits.</p>
+      </div>
+      <div class="b-card reveal">
+        <div class="b-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <h3 data-en="CapCut Power-User" data-ar="متمكن من كابكت">CapCut Power-User</h3>
+        <p data-en="Deep, hands-on fluency — fast, trend-aware edits without losing polish." data-ar="خبرة عملية عميقة — مونتاج سريع يواكب الترند دون التنازل عن الجودة.">Deep, hands-on fluency — fast, trend-aware edits without losing polish.</p>
+      </div>
+      <div class="b-card reveal">
+        <div class="b-icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3" opacity=".35"/><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div>
+        <h3 data-en="Reels &amp; Short-Form" data-ar="ريلز ومحتوى قصير">Reels &amp; Short-Form</h3>
+        <p data-en="Hooks, captions and motion graphics built for the first three seconds." data-ar="افتتاحيات وتعليقات وموشن جرافيكس مصممة لأول ثلاث ثوانٍ.">Hooks, captions and motion graphics built for the first three seconds.</p>
+      </div>
+      <div class="b-card reveal">
+        <div class="b-icon"><svg viewBox="0 0 24 24"><path d="M12 5l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></div>
+        <h3 data-en="Fast Turnaround" data-ar="تسليم سريع">Fast Turnaround</h3>
+        <p data-en="Quick, reliable delivery without cutting corners." data-ar="تسليم سريع وموثوق دون التضحية بالجودة.">Quick, reliable delivery without cutting corners.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-text">
+      <span class="eyebrow reveal" data-en="About Belal Ahmed" data-ar="عن بلال">About Belal Ahmed</span>
+      <h2 class="reveal" data-en="Built For Attention" data-ar="مصمم لجذب الانتباه">Built For Attention</h2>
+      <p class="lead reveal" data-en="Belal Ahmed is a video editor specializing in Reels and short-form content, working across Adobe Premiere Pro and CapCut. Deep, hands-on fluency in CapCut lets him move fast without sacrificing polish — every cut built to hold attention from the first second and keep it." data-ar="بلال أحمد مونتير فيديو متخصص في تحرير الريلز والمحتوى القصير، ويعمل باستخدام Adobe Premiere Pro و CapCut. خبرته العملية العميقة في كابكت تتيح له التنفيذ بسرعة دون التنازل عن الجودة — كل مقطع مصمم ليشد انتباه المشاهد من أول ثانية ويحافظ عليه.">
+        Belal Ahmed is a video editor specializing in Reels and short-form content, working across Adobe Premiere Pro and CapCut. Deep, hands-on fluency in CapCut lets him move fast without sacrificing polish — every cut built to hold attention from the first second and keep it.
+      </p>
+      <ul class="checklist reveal">
+        <li><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span><span data-en="CapCut power-user, fast and precise" data-ar="متمكن من كابكت، سريع ودقيق">CapCut power-user, fast and precise</span></li>
+        <li><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span><span data-en="Premiere Pro for long-form and color" data-ar="بريمير برو للمونتاج الطويل والألوان">Premiere Pro for long-form and color</span></li>
+        <li><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span><span data-en="Reels &amp; short-form specialist" data-ar="متخصص في الريلز والمحتوى القصير">Reels &amp; short-form specialist</span></li>
+      </ul>
+      <!-- تم إخفاء زرار "شاهد إنستجرام" مؤقتاً بناءً على طلب العميل - انستجرام مش هيتستخدم كوسيلة تواصل حالياً
+      <a href="https://www.instagram.com/belalghanem3/" target="_blank" rel="noopener" class="btn btn-primary reveal">
+        <span data-en="See Instagram" data-ar="شاهد إنستجرام">See Instagram</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      -->
+    </div>
+    <div class="about-visual reveal">
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="ring r3"></div>
+      <div class="center-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+    </div>
+  </div>
+</section>
+
+<section class="works" id="works">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow" data-en="Selected Work" data-ar="أعمال مختارة">Selected Work</span>
+      <h2 data-en="A Look At Recent Edits" data-ar="نظرة على أحدث الأعمال">A Look At Recent Edits</h2>
+      <p data-en="Tap any card to watch the full edit." data-ar="اضغط على أي بطاقة لمشاهدة الفيديو كاملاً.">Tap any card to watch the full edit.</p>
+    </div>
+    <div class="works-grid stagger" id="works-grid"></div>
+  </div>
+</section>
+
+<section class="cta-section" id="contact">
+  <div class="wrap">
+    <div class="cta-box reveal">
+      <div class="cta-glow"></div>
+      <h2 data-en="Let's Create Your Next Reel" data-ar="لنصنع الريل القادم">Let's Create Your Next Reel</h2>
+      <p data-en="Have a project in mind? Send a message on Instagram or WhatsApp and let's talk." data-ar="عندك مشروع في بالك؟ راسلني على إنستجرام أو واتساب ونتكلم.">Have a project in mind? Send a message on Instagram or WhatsApp and let's talk.</p>
+      <div class="cta-btns">
+        <a href="https://wa.me/201157124293" target="_blank" rel="noopener" class="btn btn-primary">
+          <span data-en="WhatsApp" data-ar="واتساب">WhatsApp</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <!-- انستجرام مش بيتستخدم كوسيلة تواصل حالياً، واتساب بس -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#top" class="logo"><span data-en="BELAL" data-ar="بلال">BELAL</span><span class="dot">.</span></a>
+        <p data-en="Video editor working across Reels and short-form content with Adobe Premiere Pro and CapCut." data-ar="مونتير فيديو متخصص في الريلز والمحتوى القصير باستخدام Adobe Premiere Pro و CapCut.">Video editor working across Reels and short-form content with Adobe Premiere Pro and CapCut.</p>
+      </div>
+      <div class="foot-col">
+        <h4 data-en="Pages" data-ar="الصفحات">Pages</h4>
+        <a href="#top" data-en="Home" data-ar="الرئيسية">Home</a>
+        <a href="#works" data-en="Works" data-ar="الأعمال">Works</a>
+        <a href="#about" data-en="About" data-ar="عني">About</a>
+        <a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h4 data-en="Contact" data-ar="تواصل">Contact</h4>
+        <a href="https://www.instagram.com/belalghanem3/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://wa.me/201157124293" target="_blank" rel="noopener" dir="ltr" style="display:block">+20 115 712 4293</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span data-en="© 2026 Belal Ahmed. All rights reserved." data-ar="© 2026 بلال أحمد. جميع الحقوق محفوظة.">© 2026 Belal Ahmed. All rights reserved.</span>
+      <span data-en="Premiere Pro · CapCut" data-ar="بريمير برو · كابكت">Premiere Pro · CapCut</span>
+    </div>
+  </div>
+</footer>
+
+<div class="video-modal" id="video-modal">
+  <div class="video-modal-inner">
+    <button class="video-modal-close" id="video-modal-close">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <iframe id="video-modal-frame" src="" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+  </div>
+</div>
+
+<script>
+  // ---- work video links (from client) ----
+  const works = [
+    "https://drive.google.com/file/d/14kDnj5M63POuIllcbHuX76vufbPfUWjR/view?usp=sharing",
+    "https://drive.google.com/file/d/1q79zVva-MSrJ6WE3curSdR7uqJlKJjiT/view?usp=drive_link",
+    "https://drive.google.com/file/d/1PuzqbBYV8Uny4hLNrtN8ORFeilNIbtN_/view?usp=drive_link",
+    "https://drive.google.com/file/d/1bEQajj7rBLnQ_js2biaqsxDfLCuGsS7r/view?usp=drive_link",
+    "https://drive.google.com/file/d/1PrZbGOsu9EX-R1KkAZaa2OJZOX90bzgz/view?usp=drive_link",
+    "https://drive.google.com/file/d/1tPM9fTu7ANJXvhwe2_c6-_LOTIDB3j0x/view?usp=drive_link",
+    "https://drive.google.com/file/d/1t9SjQMQzqxalTR30W8AWg1eIpxwqUJLj/view?usp=drive_link",
+    "https://drive.google.com/file/d/1eiFbDHoJ0xMUuhGVCZ59Zn29MVbUzBvL/view?usp=drive_link"
+  ];
+  const gradients = [
+    "radial-gradient(circle at 30% 20%, rgba(255,138,61,.45), transparent 55%), linear-gradient(135deg,#1b1108,#0a0b0d 65%)",
+    "radial-gradient(circle at 70% 25%, rgba(255,90,31,.4), transparent 55%), linear-gradient(135deg,#150c07,#0a0b0d 65%)",
+    "radial-gradient(circle at 50% 70%, rgba(255,138,61,.4), transparent 55%), linear-gradient(135deg,#1a0f08,#0a0b0d 65%)",
+    "radial-gradient(circle at 20% 60%, rgba(255,90,31,.45), transparent 55%), linear-gradient(135deg,#160d06,#0a0b0d 65%)"
+  ];
+  function driveId(url){
+    const m = url.match(/\/d\/([^/]+)/);
+    return m ? m[1] : null;
+  }
+
+  const grid = document.getElementById('works-grid');
+  works.forEach((url, i) => {
+    const num = String(i + 1).padStart(2, '0');
+    const id = driveId(url);
+    const thumbSrc = id ? `https://drive.google.com/thumbnail?id=${id}&sz=w800` : '';
+    const previewUrl = id ? `https://drive.google.com/file/d/${id}/preview` : url;
+
+    const card = document.createElement('div');
+    card.className = "w-card reveal";
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.dataset.preview = previewUrl;
+    card.innerHTML = `
+      <div class="w-thumb" style="background:${gradients[i % gradients.length]}">
+        <img class="w-thumb-img" src="${thumbSrc}" alt="" onerror="this.style.display='none'">
+        <div class="w-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="w-label"><span data-en="Edit ${num}" data-ar="مونتاج ${num}">Edit ${num}</span><small data-en="Tap to play" data-ar="اضغط للتشغيل">Tap to play</small></div>
+    `;
+    const open = ()=>openVideoModal(previewUrl);
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') open(); });
+    grid.appendChild(card);
+  });
+
+  // ---- in-site video modal ----
+  const modal = document.getElementById('video-modal');
+  const modalFrame = document.getElementById('video-modal-frame');
+  const modalClose = document.getElementById('video-modal-close');
+  function openVideoModal(url){
+    modalFrame.src = url;
+    modal.classList.add('open');
+  }
+  function closeVideoModal(){
+    modal.classList.remove('open');
+    modalFrame.src = '';
+  }
+  modalClose.addEventListener('click', closeVideoModal);
+  modal.addEventListener('click', (e)=>{ if(e.target === modal) closeVideoModal(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeVideoModal(); });
+
+  // ---- scroll reveal ----
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  }, {threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // hero elements reveal immediately on load
+  window.addEventListener('load', ()=>{
+    document.querySelectorAll('.hero .reveal').forEach((el,i)=>{
+      setTimeout(()=>el.classList.add('in'), i*120);
+    });
+  });
+
+  // ---- sticky header ----
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', ()=>{
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // ---- cursor spotlight ----
+  const spot = document.getElementById('spotlight');
+  document.querySelector('.hero').addEventListener('mousemove', (e)=>{
+    const r = e.currentTarget.getBoundingClientRect();
+    spot.style.setProperty('--x', (e.clientX - r.left) + 'px');
+    spot.style.setProperty('--y', (e.clientY - r.top) + 'px');
+  });
+
+  // ---- language toggle ----
+  const btnEn = document.getElementById('btn-en');
+  const btnAr = document.getElementById('btn-ar');
+  function setLang(lang){
+    const isAr = lang === 'ar';
+    document.documentElement.classList.toggle('lang-ar', isAr);
+    document.documentElement.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+    document.documentElement.setAttribute('lang', isAr ? 'ar' : 'en');
+    btnEn.classList.toggle('active', !isAr);
+    btnAr.classList.toggle('active', isAr);
+    document.querySelectorAll('[data-en]').forEach(el=>{
+      el.textContent = isAr ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+    });
+  }
+  btnEn.addEventListener('click', ()=>setLang('en'));
+  btnAr.addEventListener('click', ()=>setLang('ar'));
+</script>
+</body>
+</html>
