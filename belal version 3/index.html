@@ -45,8 +45,20 @@
   section{position:relative;}
 
   /* ---------- reveal ---------- */
-  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
-  .reveal.in{opacity:1;transform:translateY(0);}
+  .reveal{opacity:0;transform:translateY(24px);filter:none;transition:opacity .7s ease, transform .7s ease, filter .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);filter:none;}
+
+  .reveal.dir-left{transform:translateX(-46px);}
+  .reveal.dir-left.in{transform:translateX(0);}
+  .reveal.dir-right{transform:translateX(46px);}
+  .reveal.dir-right.in{transform:translateX(0);}
+  .reveal.dir-zoom{transform:scale(.82);}
+  .reveal.dir-zoom.in{transform:scale(1);}
+  .reveal.dir-blur{transform:translateY(18px);filter:blur(10px);}
+  .reveal.dir-blur.in{transform:translateY(0);filter:blur(0);}
+  html[dir="rtl"] .reveal.dir-left{transform:translateX(46px);}
+  html[dir="rtl"] .reveal.dir-right{transform:translateX(-46px);}
+  html[dir="rtl"] .reveal.dir-left.in, html[dir="rtl"] .reveal.dir-right.in{transform:translateX(0);}
   .stagger .reveal:nth-child(1){transition-delay:.05s;}
   .stagger .reveal:nth-child(2){transition-delay:.15s;}
   .stagger .reveal:nth-child(3){transition-delay:.25s;}
@@ -180,7 +192,9 @@
   .mock-body{padding:26px;}
   .player{
     position:relative;border-radius:12px;overflow:hidden;
-    aspect-ratio:16/7.2;
+    aspect-ratio:9/16;
+    max-width:320px;
+    margin:0 auto;
     background:
       radial-gradient(circle at 30% 20%, rgba(255,138,61,.35), transparent 55%),
       linear-gradient(135deg,#1b1108,#0a0b0d 60%);
@@ -390,7 +404,7 @@
 <header id="header">
   <div class="wrap">
     <nav>
-      <a href="#top" class="logo"><span data-en="BELAL Ahmed" data-ar=" بلال احمد">BELAL AHMED</span><span class="dot">.</span></a>
+      <a href="#top" class="logo"><span data-en="BELAL" data-ar="بلال">BELAL</span><span class="dot">.</span></a>
       <div class="nav-links">
         <a href="#top" class="active" data-en="Home" data-ar="الرئيسية">Home</a>
         <a href="#works" data-en="Works" data-ar="الأعمال">Works</a>
@@ -434,7 +448,7 @@
 
     <div class="mock reveal">
       <div class="mock-top">
-        <span class="m-logo">BELAL AHMED<span style="color:var(--accent)">.</span></span>
+        <span class="m-logo">BELAL<span style="color:var(--accent)">.</span></span>
         <div class="mock-tabs">
           <span class="on" data-en="Timeline" data-ar="الخط الزمني">Timeline</span>
           <span data-en="Clips" data-ar="المقاطع">Clips</span>
@@ -443,9 +457,9 @@
         <span data-en="CapCut · Premiere Pro" data-ar="كابكت · بريمير برو">CapCut · Premiere Pro</span>
       </div>
       <div class="mock-body">
-        <!-- فيديو تعريفي: ده لينك درايف مؤقت، استبدله بلينك الفيديو التعريفي النهائي بتاعك -->
+        <!-- Google Drive — فيديو تعريفي: ده لينك درايف مؤقت، استبدله بلينك الفيديو التعريفي النهائي بتاعك -->
         <div class="player">
-          <iframe id="intro-video" src="https://drive.google.com/file/d/14kDnj5M63POuIllcbHuX76vufbPfUWjR/preview" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+          <iframe id="intro-video" src="https://drive.google.com/file/d/1Toy3Ub9grRz4D3pDJvbWyLgzAIOXWyJi/preview" allow="autoplay" allowfullscreen loading="lazy"></iframe>
         </div>
         <div class="stat-row">
           <div class="stat"><div class="k" data-en="Tools" data-ar="الأدوات">Tools</div><div class="v">Premiere</div></div>
@@ -479,22 +493,22 @@
       <h2 data-en="Editing, Built Around Attention" data-ar="مونتاج مبني على جذب الانتباه">Editing, Built Around Attention</h2>
     </div>
     <div class="bento stagger">
-      <div class="b-card reveal">
+      <div class="b-card reveal dir-zoom">
         <div class="b-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z" opacity=".35"/><path d="M8 20h8M12 16v4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
         <h3 data-en="Premiere Pro" data-ar="بريمير برو">Premiere Pro</h3>
         <p data-en="Advanced color grading, multicam sync and precise pacing for long-form and narrative edits." data-ar="تصحيح ألوان متقدم، مزامنة كاميرات متعددة، وإيقاع دقيق للمونتاج الطويل والسردي.">Advanced color grading, multicam sync and precise pacing for long-form and narrative edits.</p>
       </div>
-      <div class="b-card reveal">
+      <div class="b-card reveal dir-zoom">
         <div class="b-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
         <h3 data-en="CapCut Power-User" data-ar="متمكن من كابكت">CapCut Power-User</h3>
         <p data-en="Deep, hands-on fluency — fast, trend-aware edits without losing polish." data-ar="خبرة عملية عميقة — مونتاج سريع يواكب الترند دون التنازل عن الجودة.">Deep, hands-on fluency — fast, trend-aware edits without losing polish.</p>
       </div>
-      <div class="b-card reveal">
+      <div class="b-card reveal dir-zoom">
         <div class="b-icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3" opacity=".35"/><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div>
         <h3 data-en="Reels &amp; Short-Form" data-ar="ريلز ومحتوى قصير">Reels &amp; Short-Form</h3>
         <p data-en="Hooks, captions and motion graphics built for the first three seconds." data-ar="افتتاحيات وتعليقات وموشن جرافيكس مصممة لأول ثلاث ثوانٍ.">Hooks, captions and motion graphics built for the first three seconds.</p>
       </div>
-      <div class="b-card reveal">
+      <div class="b-card reveal dir-zoom">
         <div class="b-icon"><svg viewBox="0 0 24 24"><path d="M12 5l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></div>
         <h3 data-en="Fast Turnaround" data-ar="تسليم سريع">Fast Turnaround</h3>
         <p data-en="Quick, reliable delivery without cutting corners." data-ar="تسليم سريع وموثوق دون التضحية بالجودة.">Quick, reliable delivery without cutting corners.</p>
@@ -506,12 +520,12 @@
 <section class="about" id="about">
   <div class="wrap about-grid">
     <div class="about-text">
-      <span class="eyebrow reveal" data-en="About Belal Ahmed" data-ar="عن بلال">About Belal Ahmed</span>
-      <h2 class="reveal" data-en="Built For Attention" data-ar="مصمم لجذب الانتباه">Built For Attention</h2>
-      <p class="lead reveal" data-en="Belal Ahmed is a video editor specializing in Reels and short-form content, working across Adobe Premiere Pro and CapCut. Deep, hands-on fluency in CapCut lets him move fast without sacrificing polish — every cut built to hold attention from the first second and keep it." data-ar="بلال أحمد مونتير فيديو متخصص في تحرير الريلز والمحتوى القصير، ويعمل باستخدام Adobe Premiere Pro و CapCut. خبرته العملية العميقة في كابكت تتيح له التنفيذ بسرعة دون التنازل عن الجودة — كل مقطع مصمم ليشد انتباه المشاهد من أول ثانية ويحافظ عليه.">
+      <span class="eyebrow reveal dir-left" data-en="About Belal" data-ar="عن بلال">About Belal</span>
+      <h2 class="reveal dir-left" data-en="Built For Attention" data-ar="مصمم لجذب الانتباه">Built For Attention</h2>
+      <p class="lead reveal dir-left" data-en="Belal Ahmed is a video editor specializing in Reels and short-form content, working across Adobe Premiere Pro and CapCut. Deep, hands-on fluency in CapCut lets him move fast without sacrificing polish — every cut built to hold attention from the first second and keep it." data-ar="بلال أحمد مونتير فيديو متخصص في تحرير الريلز والمحتوى القصير، ويعمل باستخدام Adobe Premiere Pro و CapCut. خبرته العملية العميقة في كابكت تتيح له التنفيذ بسرعة دون التنازل عن الجودة — كل مقطع مصمم ليشد انتباه المشاهد من أول ثانية ويحافظ عليه.">
         Belal Ahmed is a video editor specializing in Reels and short-form content, working across Adobe Premiere Pro and CapCut. Deep, hands-on fluency in CapCut lets him move fast without sacrificing polish — every cut built to hold attention from the first second and keep it.
       </p>
-      <ul class="checklist reveal">
+      <ul class="checklist reveal dir-left">
         <li><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span><span data-en="CapCut power-user, fast and precise" data-ar="متمكن من كابكت، سريع ودقيق">CapCut power-user, fast and precise</span></li>
         <li><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span><span data-en="Premiere Pro for long-form and color" data-ar="بريمير برو للمونتاج الطويل والألوان">Premiere Pro for long-form and color</span></li>
         <li><span class="check"><svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg></span><span data-en="Reels &amp; short-form specialist" data-ar="متخصص في الريلز والمحتوى القصير">Reels &amp; short-form specialist</span></li>
@@ -523,7 +537,7 @@
       </a>
       -->
     </div>
-    <div class="about-visual reveal">
+    <div class="about-visual reveal dir-right">
       <div class="ring r1"></div>
       <div class="ring r2"></div>
       <div class="ring r3"></div>
@@ -545,7 +559,7 @@
 
 <section class="cta-section" id="contact">
   <div class="wrap">
-    <div class="cta-box reveal">
+    <div class="cta-box reveal dir-zoom">
       <div class="cta-glow"></div>
       <h2 data-en="Let's Create Your Next Reel" data-ar="لنصنع الريل القادم">Let's Create Your Next Reel</h2>
       <p data-en="Have a project in mind? Send a message on Instagram or WhatsApp and let's talk." data-ar="عندك مشروع في بالك؟ راسلني على إنستجرام أو واتساب ونتكلم.">Have a project in mind? Send a message on Instagram or WhatsApp and let's talk.</p>
@@ -598,15 +612,13 @@
 
 <script>
   // ---- work video links (from client) ----
+  // كل اللينكات دي روابط Google Drive لفيديوهات الأعمال (كل رابط يفتح معاينة الفيديو على درايف)
   const works = [
-    "https://drive.google.com/file/d/14kDnj5M63POuIllcbHuX76vufbPfUWjR/view?usp=sharing",
-    "https://drive.google.com/file/d/1q79zVva-MSrJ6WE3curSdR7uqJlKJjiT/view?usp=drive_link",
-    "https://drive.google.com/file/d/1PuzqbBYV8Uny4hLNrtN8ORFeilNIbtN_/view?usp=drive_link",
-    "https://drive.google.com/file/d/1bEQajj7rBLnQ_js2biaqsxDfLCuGsS7r/view?usp=drive_link",
-    "https://drive.google.com/file/d/1PrZbGOsu9EX-R1KkAZaa2OJZOX90bzgz/view?usp=drive_link",
-    "https://drive.google.com/file/d/1tPM9fTu7ANJXvhwe2_c6-_LOTIDB3j0x/view?usp=drive_link",
-    "https://drive.google.com/file/d/1t9SjQMQzqxalTR30W8AWg1eIpxwqUJLj/view?usp=drive_link",
-    "https://drive.google.com/file/d/1eiFbDHoJ0xMUuhGVCZ59Zn29MVbUzBvL/view?usp=drive_link"
+    "https://drive.google.com/file/d/1PrZbGOsu9EX-R1KkAZaa2OJZOX90bzgz/view?usp=drive_link", // Google Drive — فيديو 01
+    "https://drive.google.com/file/d/1E3st1Ji_v4P2T-JDqAYNR8xB0gd4Dm_F/view?usp=drive_link", // Google Drive — فيديو 02
+    "https://drive.google.com/file/d/1tPM9fTu7ANJXvhwe2_c6-_LOTIDB3j0x/view?usp=drive_link", // Google Drive — فيديو 03
+    "https://drive.google.com/file/d/1RNG8zToK98aPg79ZqbzsFgnRK3mteek3/view?usp=drive_link", // Google Drive — فيديو 04
+    "https://drive.google.com/file/d/1t9SjQMQzqxalTR30W8AWg1eIpxwqUJLj/view?usp=drive_link"  // Google Drive — فيديو 05
   ];
   const gradients = [
     "radial-gradient(circle at 30% 20%, rgba(255,138,61,.45), transparent 55%), linear-gradient(135deg,#1b1108,#0a0b0d 65%)",
@@ -627,7 +639,7 @@
     const previewUrl = id ? `https://drive.google.com/file/d/${id}/preview` : url;
 
     const card = document.createElement('div');
-    card.className = "w-card reveal";
+    card.className = "w-card reveal dir-blur";
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
     card.dataset.preview = previewUrl;
@@ -660,11 +672,12 @@
   modal.addEventListener('click', (e)=>{ if(e.target === modal) closeVideoModal(); });
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeVideoModal(); });
 
-  // ---- scroll reveal ----
+  // ---- scroll reveal (reversible: replays every time you scroll past) ----
+  const revealEls = Array.from(document.querySelectorAll('.reveal')).filter(el => !el.closest('.hero'));
   const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+    entries.forEach(e=>{ e.target.classList.toggle('in', e.isIntersecting); });
   }, {threshold:.15});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  revealEls.forEach(el=>io.observe(el));
 
   // hero elements reveal immediately on load
   window.addEventListener('load', ()=>{
