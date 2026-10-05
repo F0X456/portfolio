@@ -285,6 +285,14 @@
 
   /* ---------- works ---------- */
   .works{padding:20px 0 130px;}
+  .works-filter{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:28px 0 36px;}
+  .wf-btn{
+    padding:9px 20px;border-radius:999px;border:1px solid var(--border);
+    background:var(--card);color:var(--muted);font-size:13.5px;font-weight:600;
+    cursor:pointer;transition:all .25s ease;
+  }
+  .wf-btn:hover{color:var(--text);border-color:rgba(255,90,31,.4);}
+  .wf-btn.on{background:var(--accent);color:#fff;border-color:var(--accent);}
   .works-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
   .w-card{
     position:relative;border-radius:var(--radius);overflow:hidden;
@@ -333,11 +341,11 @@
   }
   .video-modal.open{display:flex;opacity:1;}
   .video-modal-inner{
-    position:relative;width:100%;max-width:860px;
+    position:relative;width:100%;max-width:860px;max-height:88vh;
     aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden;
     border:1px solid var(--border);
     box-shadow:0 40px 100px -20px rgba(0,0,0,.7);
-    transform:scale(.94);transition:transform .3s ease;
+    transform:scale(.94);transition:transform .3s ease, max-width .3s ease;
   }
   .video-modal.open .video-modal-inner{transform:scale(1);}
   .video-modal-inner iframe{width:100%;height:100%;border:0;}
@@ -553,6 +561,12 @@
       <h2 data-en="A Look At Recent Edits" data-ar="نظرة على أحدث الأعمال">A Look At Recent Edits</h2>
       <p data-en="Tap any card to watch the full edit." data-ar="اضغط على أي بطاقة لمشاهدة الفيديو كاملاً.">Tap any card to watch the full edit.</p>
     </div>
+    <div class="works-filter reveal" id="works-filter">
+      <button class="wf-btn on" data-filter="all" data-en="All" data-ar="الكل">All</button>
+      <button class="wf-btn" data-filter="documentary" data-en="Documentary" data-ar="أفلام وثائقية">Documentary</button>
+      <button class="wf-btn" data-filter="promo" data-en="Promo" data-ar="برومو">Promo</button>
+      <button class="wf-btn" data-filter="reels" data-en="Reels" data-ar="ريلز">Reels</button>
+    </div>
     <div class="works-grid stagger" id="works-grid"></div>
   </div>
 </section>
@@ -612,14 +626,23 @@
 
 <script>
   // ---- work video links (from client) ----
-  // كل اللينكات دي روابط Google Drive لفيديوهات الأعمال (كل رابط يفتح معاينة الفيديو على درايف)
+  // كل اللينكات دي روابط Google Drive لفيديوهات الأعمال، كل فيديو ليه تصنيف (أفلام وثائقية / برومو / ريلز)
   const works = [
-    "https://drive.google.com/file/d/1PrZbGOsu9EX-R1KkAZaa2OJZOX90bzgz/view?usp=drive_link", // Google Drive — فيديو 01
-    "https://drive.google.com/file/d/1E3st1Ji_v4P2T-JDqAYNR8xB0gd4Dm_F/view?usp=drive_link", // Google Drive — فيديو 02
-    "https://drive.google.com/file/d/1tPM9fTu7ANJXvhwe2_c6-_LOTIDB3j0x/view?usp=drive_link", // Google Drive — فيديو 03
-    "https://drive.google.com/file/d/1RNG8zToK98aPg79ZqbzsFgnRK3mteek3/view?usp=drive_link", // Google Drive — فيديو 04
-    "https://drive.google.com/file/d/1t9SjQMQzqxalTR30W8AWg1eIpxwqUJLj/view?usp=drive_link"  // Google Drive — فيديو 05
+    { url: "https://drive.google.com/file/d/1sKNzzUowo6EIBhtJwtK_sblugF3BjSwM/view?usp=drive_link", category: "documentary" }, // Google Drive — فيلم وثائقي
+    { url: "https://drive.google.com/file/d/1LTOqbYssoaejhArvcoSK1YR9mdpXZEDV/view?usp=drive_link", category: "documentary" }, // Google Drive — فيلم وثائقي
+    { url: "https://drive.google.com/file/d/1x_WU4z0phfDZ5w5FbWm4nIIRaP6Yh_7p/view?usp=drive_link", category: "promo" }, // Google Drive — برومو
+    { url: "https://drive.google.com/file/d/1i-l_nh1d0I73Qwf8q44BFDcDzpnLXWE0/view?usp=drive_link", category: "promo" }, // Google Drive — برومو
+    { url: "https://drive.google.com/file/d/1PrZbGOsu9EX-R1KkAZaa2OJZOX90bzgz/view?usp=drive_link", category: "reels" }, // Google Drive — ريلز
+    { url: "https://drive.google.com/file/d/1E3st1Ji_v4P2T-JDqAYNR8xB0gd4Dm_F/view?usp=drive_link", category: "reels" }, // Google Drive — ريلز
+    { url: "https://drive.google.com/file/d/1tPM9fTu7ANJXvhwe2_c6-_LOTIDB3j0x/view?usp=drive_link", category: "reels" }, // Google Drive — ريلز
+    { url: "https://drive.google.com/file/d/1RNG8zToK98aPg79ZqbzsFgnRK3mteek3/view?usp=drive_link", category: "reels" }, // Google Drive — ريلز
+    { url: "https://drive.google.com/file/d/1t9SjQMQzqxalTR30W8AWg1eIpxwqUJLj/view?usp=drive_link", category: "reels" }  // Google Drive — ريلز
   ];
+  const categoryLabels = {
+    documentary: { en: "Documentary", ar: "أفلام وثائقية" },
+    promo:       { en: "Promo",       ar: "برومو" },
+    reels:       { en: "Reels",       ar: "ريلز" }
+  };
   const gradients = [
     "radial-gradient(circle at 30% 20%, rgba(255,138,61,.45), transparent 55%), linear-gradient(135deg,#1b1108,#0a0b0d 65%)",
     "radial-gradient(circle at 70% 25%, rgba(255,90,31,.4), transparent 55%), linear-gradient(135deg,#150c07,#0a0b0d 65%)",
@@ -631,37 +654,74 @@
     return m ? m[1] : null;
   }
 
+  // رقّم كل فيديو داخل تصنيفه: فيديو 1، فيديو 2 ... (الترقيم بيتصفّر مع كل تصنيف جديد)
+  const catCount = {};
+  works.forEach(w => { catCount[w.category] = (catCount[w.category] || 0) + 1; w.num = catCount[w.category]; });
+
   const grid = document.getElementById('works-grid');
-  works.forEach((url, i) => {
-    const num = String(i + 1).padStart(2, '0');
-    const id = driveId(url);
+  works.forEach((w, i) => {
+    const id = driveId(w.url);
     const thumbSrc = id ? `https://drive.google.com/thumbnail?id=${id}&sz=w800` : '';
-    const previewUrl = id ? `https://drive.google.com/file/d/${id}/preview` : url;
+    const previewUrl = id ? `https://drive.google.com/file/d/${id}/preview` : w.url;
+    const cat = categoryLabels[w.category] || { en: w.category, ar: w.category };
 
     const card = document.createElement('div');
     card.className = "w-card reveal dir-blur";
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
     card.dataset.preview = previewUrl;
+    card.dataset.category = w.category;
     card.innerHTML = `
       <div class="w-thumb" style="background:${gradients[i % gradients.length]}">
         <img class="w-thumb-img" src="${thumbSrc}" alt="" onerror="this.style.display='none'">
         <div class="w-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
       </div>
-      <div class="w-label"><span data-en="Edit ${num}" data-ar="مونتاج ${num}">Edit ${num}</span><small data-en="Tap to play" data-ar="اضغط للتشغيل">Tap to play</small></div>
+      <div class="w-label"><span data-en="Video ${w.num}" data-ar="فيديو ${w.num}">Video ${w.num}</span><small data-en="${cat.en}" data-ar="${cat.ar}">${cat.en}</small></div>
     `;
-    const open = ()=>openVideoModal(previewUrl);
+    // نحدد شكل الفيديو (فيرتيكال أو هوريزنتال) من أبعاد الثمبنيل الحقيقية عشان نعرض البلاير بنفس تنسيقه
+    const thumbImg = card.querySelector('.w-thumb-img');
+    thumbImg.addEventListener('load', () => {
+      if (thumbImg.naturalWidth && thumbImg.naturalHeight){
+        card.dataset.ratio = (thumbImg.naturalWidth / thumbImg.naturalHeight).toFixed(4);
+      }
+    });
+    const open = () => openVideoModal(previewUrl, card.dataset.ratio ? parseFloat(card.dataset.ratio) : null);
     card.addEventListener('click', open);
     card.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') open(); });
     grid.appendChild(card);
   });
 
+  // ---- فلترة الأعمال حسب التصنيف ----
+  const filterBtns = document.querySelectorAll('.wf-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      const f = btn.dataset.filter;
+      document.querySelectorAll('#works-grid .w-card').forEach(card => {
+        card.style.display = (f === 'all' || card.dataset.category === f) ? '' : 'none';
+      });
+    });
+  });
+
   // ---- in-site video modal ----
   const modal = document.getElementById('video-modal');
   const modalFrame = document.getElementById('video-modal-frame');
+  const modalInner = document.querySelector('.video-modal-inner');
   const modalClose = document.getElementById('video-modal-close');
-  function openVideoModal(url){
+  function openVideoModal(url, ratio){
     modalFrame.src = url;
+    // البلاير بياخد تنسيق الفيديو نفسه: فيرتيكال لو أضيق من مربع، هوريزنتال لو أعرض
+    if (ratio && ratio < 0.95){
+      modalInner.style.aspectRatio = ratio;
+      modalInner.style.maxWidth = '420px';
+    } else if (ratio){
+      modalInner.style.aspectRatio = ratio;
+      modalInner.style.maxWidth = '860px';
+    } else {
+      modalInner.style.aspectRatio = '16/9';
+      modalInner.style.maxWidth = '860px';
+    }
     modal.classList.add('open');
   }
   function closeVideoModal(){
