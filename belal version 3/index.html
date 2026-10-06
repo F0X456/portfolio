@@ -108,6 +108,8 @@
   }
   .btn-primary{background:linear-gradient(135deg,var(--accent-2),var(--accent));color:#fff;box-shadow:0 8px 24px -8px var(--accent-glow);}
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px -6px var(--accent-glow);}
+  .btn-whatsapp{background:linear-gradient(135deg,#2bdb6f,#1ebe5a);color:#fff;box-shadow:0 8px 24px -8px rgba(37,211,102,.45);}
+  .btn-whatsapp:hover{transform:translateY(-2px);box-shadow:0 12px 30px -6px rgba(37,211,102,.45);}
   .btn-ghost{background:var(--card);border:1px solid var(--border);color:var(--text);}
   .btn-ghost:hover{background:var(--card-2);transform:translateY(-2px);}
   .btn svg{width:14px;height:14px;transition:transform .25s ease;}
@@ -193,7 +195,7 @@
   .player{
     position:relative;border-radius:12px;overflow:hidden;
     aspect-ratio:9/16;
-    max-width:320px;
+    max-width:260px;
     margin:0 auto;
     background:
       radial-gradient(circle at 30% 20%, rgba(255,138,61,.35), transparent 55%),
@@ -347,6 +349,35 @@
     box-shadow:0 40px 100px -20px rgba(0,0,0,.7);
     transform:scale(.94);transition:transform .3s ease, max-width .3s ease;
   }
+
+  /* ---------- admin dashboard ---------- */
+  .logo{cursor:pointer;user-select:none;}
+  .login-input{width:100%;padding:11px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;margin-bottom:10px;}
+  .login-box{max-width:340px;}
+  .login-error{color:#ff5a5a;font-size:13px;min-height:16px;margin:2px 0 14px;}
+  .login-error.ok{color:#2bdb6f;}
+  .admin-pass-box{margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+  .admin-pass-box h4{margin:0 0 10px;font-size:14px;color:var(--muted);}
+  .pass-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  @media(max-width:480px){.pass-row{grid-template-columns:1fr;}}
+  .admin-panel{
+    position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;
+    padding:20px;background:rgba(5,4,3,.82);backdrop-filter:blur(6px);
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .admin-panel.open{opacity:1;pointer-events:auto;}
+  .admin-box{width:100%;max-width:660px;max-height:86vh;overflow-y:auto;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;}
+  .admin-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .admin-head h3{margin:0;font-size:18px;}
+  .admin-head button{background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;line-height:1;}
+  .admin-hint{color:var(--muted);font-size:13px;margin:0 0 18px;}
+  .admin-row{display:grid;grid-template-columns:1.1fr 1fr 1fr 110px 32px;gap:8px;margin-bottom:10px;align-items:center;}
+  .admin-row input, .admin-row select{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;}
+  .admin-row button{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;height:34px;}
+  .admin-row button:hover{color:#ff5a5a;border-color:#ff5a5a;}
+  #admin-add{margin-bottom:18px;}
+  .admin-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  @media(max-width:620px){.admin-row{grid-template-columns:1fr;}}
   .video-modal.open .video-modal-inner{transform:scale(1);}
   .video-modal-inner iframe{width:100%;height:100%;border:0;}
   .video-modal-close{
@@ -412,7 +443,7 @@
 <header id="header">
   <div class="wrap">
     <nav>
-      <a href="#top" class="logo"><span data-en="BELAL" data-ar="بلال">BELAL</span><span class="dot">.</span></a>
+      <a href="#top" class="logo" id="brand-logo"><span data-en="BELAL" data-ar="بلال">BELAL</span><span class="dot">.</span></a>
       <div class="nav-links">
         <a href="#top" class="active" data-en="Home" data-ar="الرئيسية">Home</a>
         <a href="#works" data-en="Works" data-ar="الأعمال">Works</a>
@@ -424,7 +455,7 @@
           <button id="btn-en" class="active">EN</button>
           <button id="btn-ar">AR</button>
         </div>
-        <a class="btn btn-primary" href="https://wa.me/201157124293" target="_blank" rel="noopener">
+        <a class="btn btn-whatsapp" href="https://wa.me/201157124293" target="_blank" rel="noopener">
           <span data-en="Let's Talk" data-ar="لنتحدث">Let's Talk</span>
           <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -454,42 +485,9 @@
       </a>
     </div>
 
-    <div class="mock reveal">
-      <div class="mock-top">
-        <span class="m-logo">BELAL<span style="color:var(--accent)">.</span></span>
-        <div class="mock-tabs">
-          <span class="on" data-en="Timeline" data-ar="الخط الزمني">Timeline</span>
-          <span data-en="Clips" data-ar="المقاطع">Clips</span>
-          <span data-en="Export" data-ar="التصدير">Export</span>
-        </div>
-        <span data-en="CapCut · Premiere Pro" data-ar="كابكت · بريمير برو">CapCut · Premiere Pro</span>
-      </div>
-      <div class="mock-body">
-        <!-- Google Drive — فيديو تعريفي: ده لينك درايف مؤقت، استبدله بلينك الفيديو التعريفي النهائي بتاعك -->
-        <div class="player">
-          <iframe id="intro-video" src="https://drive.google.com/file/d/1Toy3Ub9grRz4D3pDJvbWyLgzAIOXWyJi/preview" allow="autoplay" allowfullscreen loading="lazy"></iframe>
-        </div>
-        <div class="stat-row">
-          <div class="stat"><div class="k" data-en="Tools" data-ar="الأدوات">Tools</div><div class="v">Premiere</div></div>
-          <div class="stat"><div class="k" data-en="Tools" data-ar="الأدوات">Tools</div><div class="v">CapCut</div></div>
-          <div class="stat"><div class="k" data-en="Focus" data-ar="التخصص">Focus</div><div class="v" data-en="Reels" data-ar="ريلز">Reels</div></div>
-          <div class="stat"><div class="k" data-en="Turnaround" data-ar="التسليم">Turnaround</div><div class="v" data-en="Fast" data-ar="سريع">Fast</div></div>
-        </div>
-        <div class="timeline">
-          <div class="tl-row">
-            <div class="tl-clip" style="width:18%;background:var(--accent);"></div>
-            <div class="tl-clip" style="width:12%;background:#3a2114;"></div>
-            <div class="tl-clip" style="width:22%;background:var(--accent-2);"></div>
-            <div class="tl-clip" style="width:10%;background:#3a2114;"></div>
-            <div class="tl-clip" style="width:26%;background:var(--accent);"></div>
-            <div class="tl-clip" style="width:12%;background:#3a2114;"></div>
-          </div>
-          <div class="caption">
-            <span data-en="00:00" data-ar="٠٠:٠٠">00:00</span>
-            <span data-en="Ready to export" data-ar="جاهز للتصدير">Ready to export</span>
-          </div>
-        </div>
-      </div>
+    <!-- Google Drive — فيديو تعريفي: ده لينك درايف مؤقت، استبدله بلينك الفيديو التعريفي النهائي بتاعك -->
+    <div class="player reveal">
+      <iframe id="intro-video" src="https://drive.google.com/file/d/1Toy3Ub9grRz4D3pDJvbWyLgzAIOXWyJi/preview" allow="autoplay" allowfullscreen loading="lazy"></iframe>
     </div>
   </div>
 </section>
@@ -578,7 +576,7 @@
       <h2 data-en="Let's Create Your Next Reel" data-ar="لنصنع الريل القادم">Let's Create Your Next Reel</h2>
       <p data-en="Have a project in mind? Send a message on Instagram or WhatsApp and let's talk." data-ar="عندك مشروع في بالك؟ راسلني على إنستجرام أو واتساب ونتكلم.">Have a project in mind? Send a message on Instagram or WhatsApp and let's talk.</p>
       <div class="cta-btns">
-        <a href="https://wa.me/201157124293" target="_blank" rel="noopener" class="btn btn-primary">
+        <a href="https://wa.me/201157124293" target="_blank" rel="noopener" class="btn btn-whatsapp">
           <span data-en="WhatsApp" data-ar="واتساب">WhatsApp</span>
           <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -624,19 +622,59 @@
   </div>
 </div>
 
+<div class="admin-panel" id="login-panel">
+  <div class="admin-box login-box">
+    <div class="admin-head">
+      <h3 data-en="Admin Login" data-ar="تسجيل الدخول">Admin Login</h3>
+      <button id="login-close" aria-label="Close">×</button>
+    </div>
+    <input type="text" id="login-user" class="login-input" placeholder="Username" autocomplete="off">
+    <input type="password" id="login-pass" class="login-input" placeholder="Password" autocomplete="off">
+    <p id="login-error" class="login-error"></p>
+    <button id="login-submit" class="btn btn-primary" type="button" data-en="Login" data-ar="دخول" style="width:100%;justify-content:center;">Login</button>
+  </div>
+</div>
+
+<div class="admin-panel" id="admin-panel">
+  <div class="admin-box">
+    <div class="admin-head">
+      <h3 data-en="Edit Portfolio" data-ar="تعديل البورتفوليو">Edit Portfolio</h3>
+      <button id="admin-close" aria-label="Close">×</button>
+    </div>
+    <p class="admin-hint" data-en="Add, edit or remove videos and thumbnails. Changes save in this browser. Download the updated file to publish them live." data-ar="ضيف أو عدّل أو امسح الفيديوهات والصور. التغييرات بتتحفظ في المتصفح ده. حمّل الملف المحدث عشان تنشره.">Add, edit or remove videos and thumbnails. Changes save in this browser. Download the updated file to publish them live.</p>
+    <div id="admin-rows"></div>
+    <button id="admin-add" class="btn btn-ghost" type="button" data-en="+ Add Video" data-ar="+ إضافة فيديو">+ Add Video</button>
+    <div class="admin-actions">
+      <button id="admin-save" class="btn btn-primary" type="button" data-en="Save Changes" data-ar="حفظ التغييرات">Save Changes</button>
+      <button id="admin-export" class="btn btn-ghost" type="button" data-en="Download Updated HTML" data-ar="تحميل الملف المحدث">Download Updated HTML</button>
+      <button id="admin-reset" class="btn btn-ghost" type="button" data-en="Reset to Default" data-ar="استرجاع الأصلي">Reset to Default</button>
+    </div>
+    <div class="admin-pass-box">
+      <h4 data-en="Change Password" data-ar="تغيير الباسورد">Change Password</h4>
+      <div class="pass-row">
+        <input type="text" id="pass-user" class="login-input" placeholder="New username">
+        <input type="password" id="pass-new" class="login-input" placeholder="New password">
+      </div>
+      <button id="pass-save" class="btn btn-ghost" type="button" data-en="Update Login" data-ar="تحديث بيانات الدخول">Update Login</button>
+      <p id="pass-msg" class="login-error ok"></p>
+    </div>
+  </div>
+</div>
+
 <script>
   // ---- work video links (from client) ----
   // كل اللينكات دي روابط Google Drive لفيديوهات الأعمال، كل فيديو ليه تصنيف (أفلام وثائقية / برومو / ريلز)
-  const works = [
-    { url: "https://drive.google.com/file/d/1sKNzzUowo6EIBhtJwtK_sblugF3BjSwM/view?usp=drive_link", category: "documentary" }, // Google Drive — فيلم وثائقي
-    { url: "https://drive.google.com/file/d/1LTOqbYssoaejhArvcoSK1YR9mdpXZEDV/view?usp=drive_link", category: "documentary" }, // Google Drive — فيلم وثائقي
-    { url: "https://drive.google.com/file/d/1x_WU4z0phfDZ5w5FbWm4nIIRaP6Yh_7p/view?usp=drive_link", category: "promo" }, // Google Drive — برومو
-    { url: "https://drive.google.com/file/d/1i-l_nh1d0I73Qwf8q44BFDcDzpnLXWE0/view?usp=drive_link", category: "promo" }, // Google Drive — برومو
-    { url: "https://drive.google.com/file/d/1PrZbGOsu9EX-R1KkAZaa2OJZOX90bzgz/view?usp=drive_link", category: "reels" }, // Google Drive — ريلز
-    { url: "https://drive.google.com/file/d/1E3st1Ji_v4P2T-JDqAYNR8xB0gd4Dm_F/view?usp=drive_link", category: "reels" }, // Google Drive — ريلز
-    { url: "https://drive.google.com/file/d/1tPM9fTu7ANJXvhwe2_c6-_LOTIDB3j0x/view?usp=drive_link", category: "reels" }, // Google Drive — ريلز
-    { url: "https://drive.google.com/file/d/1RNG8zToK98aPg79ZqbzsFgnRK3mteek3/view?usp=drive_link", category: "reels" }, // Google Drive — ريلز
-    { url: "https://drive.google.com/file/d/1t9SjQMQzqxalTR30W8AWg1eIpxwqUJLj/view?usp=drive_link", category: "reels" }  // Google Drive — ريلز
+  // ملحوظة: ده السيت الافتراضي الثابت. أي تعديل من داشبورد التعديل بيتحفظ في متصفحك (localStorage) فوق النسخة دي.
+  const DEFAULT_WORKS = [
+    { url: "https://drive.google.com/file/d/1sKNzzUowo6EIBhtJwtK_sblugF3BjSwM/view?usp=drive_link", category: "documentary", thumbnail: "", name: "" },
+    { url: "https://drive.google.com/file/d/1LTOqbYssoaejhArvcoSK1YR9mdpXZEDV/view?usp=drive_link", category: "documentary", thumbnail: "", name: "" },
+    { url: "https://drive.google.com/file/d/1x_WU4z0phfDZ5w5FbWm4nIIRaP6Yh_7p/view?usp=drive_link", category: "promo", thumbnail: "", name: "" },
+    { url: "https://drive.google.com/file/d/1i-l_nh1d0I73Qwf8q44BFDcDzpnLXWE0/view?usp=drive_link", category: "promo", thumbnail: "", name: "" },
+    { url: "https://drive.google.com/file/d/1PrZbGOsu9EX-R1KkAZaa2OJZOX90bzgz/view?usp=drive_link", category: "reels", thumbnail: "", name: "" },
+    { url: "https://drive.google.com/file/d/1E3st1Ji_v4P2T-JDqAYNR8xB0gd4Dm_F/view?usp=drive_link", category: "reels", thumbnail: "", name: "" },
+    { url: "https://drive.google.com/file/d/1tPM9fTu7ANJXvhwe2_c6-_LOTIDB3j0x/view?usp=drive_link", category: "reels", thumbnail: "", name: "" },
+    { url: "https://drive.google.com/file/d/1RNG8zToK98aPg79ZqbzsFgnRK3mteek3/view?usp=drive_link", category: "reels", thumbnail: "", name: "" },
+    { url: "https://drive.google.com/file/d/1t9SjQMQzqxalTR30W8AWg1eIpxwqUJLj/view?usp=drive_link", category: "reels", thumbnail: "", name: "" }
   ];
   const categoryLabels = {
     documentary: { en: "Documentary", ar: "أفلام وثائقية" },
@@ -650,46 +688,67 @@
     "radial-gradient(circle at 20% 60%, rgba(255,90,31,.45), transparent 55%), linear-gradient(135deg,#160d06,#0a0b0d 65%)"
   ];
   function driveId(url){
-    const m = url.match(/\/d\/([^/]+)/);
+    const m = (url || '').match(/\/d\/([^/]+)/);
     return m ? m[1] : null;
   }
 
-  // رقّم كل فيديو داخل تصنيفه: فيديو 1، فيديو 2 ... (الترقيم بيتصفّر مع كل تصنيف جديد)
-  const catCount = {};
-  works.forEach(w => { catCount[w.category] = (catCount[w.category] || 0) + 1; w.num = catCount[w.category]; });
+  // ---- تخزين محلي لتعديلات الداشبورد ----
+  const LS_KEY = 'bp_works_v1';
+  function loadWorks(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if (raw){ const parsed = JSON.parse(raw); if (Array.isArray(parsed) && parsed.length) return parsed; }
+    } catch(e){}
+    return JSON.parse(JSON.stringify(DEFAULT_WORKS));
+  }
+  function saveWorks(list){ try{ localStorage.setItem(LS_KEY, JSON.stringify(list)); } catch(e){} }
 
   const grid = document.getElementById('works-grid');
-  works.forEach((w, i) => {
-    const id = driveId(w.url);
-    const thumbSrc = id ? `https://drive.google.com/thumbnail?id=${id}&sz=w800` : '';
-    const previewUrl = id ? `https://drive.google.com/file/d/${id}/preview` : w.url;
-    const cat = categoryLabels[w.category] || { en: w.category, ar: w.category };
+  function renderWorks(list){
+    grid.innerHTML = '';
+    const catCount = {};
+    list.forEach(w => { catCount[w.category] = (catCount[w.category] || 0) + 1; w.num = catCount[w.category]; });
+    list.forEach((w, i) => {
+      const id = driveId(w.url);
+      const thumbSrc = w.thumbnail ? w.thumbnail : (id ? `https://drive.google.com/thumbnail?id=${id}&sz=w800` : '');
+      const previewUrl = id ? `https://drive.google.com/file/d/${id}/preview` : w.url;
+      const cat = categoryLabels[w.category] || { en: w.category, ar: w.category };
 
-    const card = document.createElement('div');
-    card.className = "w-card reveal dir-blur";
-    card.setAttribute('role', 'button');
-    card.setAttribute('tabindex', '0');
-    card.dataset.preview = previewUrl;
-    card.dataset.category = w.category;
-    card.innerHTML = `
-      <div class="w-thumb" style="background:${gradients[i % gradients.length]}">
-        <img class="w-thumb-img" src="${thumbSrc}" alt="" onerror="this.style.display='none'">
-        <div class="w-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-      </div>
-      <div class="w-label"><span data-en="Video ${w.num}" data-ar="فيديو ${w.num}">Video ${w.num}</span><small data-en="${cat.en}" data-ar="${cat.ar}">${cat.en}</small></div>
-    `;
-    // نحدد شكل الفيديو (فيرتيكال أو هوريزنتال) من أبعاد الثمبنيل الحقيقية عشان نعرض البلاير بنفس تنسيقه
-    const thumbImg = card.querySelector('.w-thumb-img');
-    thumbImg.addEventListener('load', () => {
-      if (thumbImg.naturalWidth && thumbImg.naturalHeight){
-        card.dataset.ratio = (thumbImg.naturalWidth / thumbImg.naturalHeight).toFixed(4);
-      }
+      const card = document.createElement('div');
+      card.className = "w-card reveal dir-blur in";
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.dataset.preview = previewUrl;
+      card.dataset.category = w.category;
+      card.innerHTML = `
+        <div class="w-thumb" style="background:${gradients[i % gradients.length]}">
+          <img class="w-thumb-img" src="${thumbSrc}" alt="" onerror="this.style.display='none'">
+          <div class="w-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="w-label"><span${w.name ? '' : ` data-en="Video ${w.num}" data-ar="فيديو ${w.num}"`}>${w.name ? w.name : `Video ${w.num}`}</span><small data-en="${cat.en}" data-ar="${cat.ar}">${cat.en}</small></div>
+      `;
+      // نحدد شكل الفيديو (فيرتيكال أو هوريزنتال) من أبعاد الثمبنيل الحقيقية عشان نعرض البلاير بنفس تنسيقه
+      const thumbImg = card.querySelector('.w-thumb-img');
+      thumbImg.addEventListener('load', () => {
+        if (thumbImg.naturalWidth && thumbImg.naturalHeight){
+          card.dataset.ratio = (thumbImg.naturalWidth / thumbImg.naturalHeight).toFixed(4);
+        }
+      });
+      const open = () => openVideoModal(previewUrl, card.dataset.ratio ? parseFloat(card.dataset.ratio) : null);
+      card.addEventListener('click', open);
+      card.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') open(); });
+      grid.appendChild(card);
     });
-    const open = () => openVideoModal(previewUrl, card.dataset.ratio ? parseFloat(card.dataset.ratio) : null);
-    card.addEventListener('click', open);
-    card.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') open(); });
-    grid.appendChild(card);
-  });
+    const activeBtn = document.querySelector('.wf-btn.on');
+    const f = activeBtn ? activeBtn.dataset.filter : 'all';
+    document.querySelectorAll('#works-grid .w-card').forEach(card => {
+      card.style.display = (f === 'all' || card.dataset.category === f) ? '' : 'none';
+    });
+    if (document.documentElement.lang === 'ar' && typeof setLang === 'function') setLang('ar');
+  }
+
+  let worksList = loadWorks();
+  renderWorks(worksList);
 
   // ---- فلترة الأعمال حسب التصنيف ----
   const filterBtns = document.querySelectorAll('.wf-btn');
@@ -703,6 +762,148 @@
       });
     });
   });
+
+  // ---- داشبورد التعديل: إضافة/تعديل/حذف فيديوهات وصور (محمي بيوزر نيم وباسورد) ----
+  const LS_AUTH = 'bp_auth_v1';
+  function loadCreds(){
+    try{
+      const raw = localStorage.getItem(LS_AUTH);
+      if (raw){ const p = JSON.parse(raw); if (p && p.user && p.pass) return p; }
+    } catch(e){}
+    return { user: 'dragon', pass: 'Baroud-12' };
+  }
+  function saveCreds(c){ try{ localStorage.setItem(LS_AUTH, JSON.stringify(c)); } catch(e){} }
+  let isAuthed = false;
+
+  const brandLogo = document.getElementById('brand-logo');
+  const loginPanel = document.getElementById('login-panel');
+  const loginUser = document.getElementById('login-user');
+  const loginPass = document.getElementById('login-pass');
+  const loginError = document.getElementById('login-error');
+  const loginSubmit = document.getElementById('login-submit');
+  const loginClose = document.getElementById('login-close');
+
+  // الدخول على الداشبورد سري: 5 ضغطات متتالية على اسم الموقع فوق خلال 2.5 ثانية
+  let logoClicks = [];
+  if (brandLogo){
+    brandLogo.addEventListener('click', (e) => {
+      const now = Date.now();
+      logoClicks = logoClicks.filter(t => now - t < 2500);
+      logoClicks.push(now);
+      if (logoClicks.length >= 5){
+        logoClicks = [];
+        e.preventDefault();
+        if (isAuthed){ openAdmin(); } else { loginError.textContent=''; loginUser.value=''; loginPass.value=''; loginPanel.classList.add('open'); loginUser.focus(); }
+      }
+    });
+  }
+  function doLogin(){
+    const c = loadCreds();
+    if (loginUser.value === c.user && loginPass.value === c.pass){
+      isAuthed = true;
+      loginPanel.classList.remove('open');
+      openAdmin();
+    } else {
+      loginError.textContent = 'اسم المستخدم أو الباسورد غلط';
+    }
+  }
+  if (loginSubmit){
+    loginSubmit.addEventListener('click', doLogin);
+    loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+    loginClose.addEventListener('click', () => loginPanel.classList.remove('open'));
+    loginPanel.addEventListener('click', (e) => { if (e.target === loginPanel) loginPanel.classList.remove('open'); });
+  }
+
+  const adminPanel = document.getElementById('admin-panel');
+  const adminClose = document.getElementById('admin-close');
+  const adminRows = document.getElementById('admin-rows');
+  const adminAdd = document.getElementById('admin-add');
+  const adminSave = document.getElementById('admin-save');
+  const adminExport = document.getElementById('admin-export');
+  const adminReset = document.getElementById('admin-reset');
+
+  function buildAdminRow(entry){
+    const row = document.createElement('div');
+    row.className = 'admin-row';
+    row.innerHTML = `
+      <input type="text" class="a-url" placeholder="Google Drive link" value="${(entry.url || '').replace(/"/g,'&quot;')}">
+      <input type="text" class="a-name" placeholder="Custom name (optional, e.g. Nike Campaign)" value="${(entry.name || '').replace(/"/g,'&quot;')}">
+      <input type="text" class="a-thumb" placeholder="Thumbnail URL (optional)" value="${(entry.thumbnail || '').replace(/"/g,'&quot;')}">
+      <select class="a-cat">
+        <option value="documentary"${entry.category === 'documentary' ? ' selected' : ''}>Documentary</option>
+        <option value="promo"${entry.category === 'promo' ? ' selected' : ''}>Promo</option>
+        <option value="reels"${entry.category === 'reels' ? ' selected' : ''}>Reels</option>
+      </select>
+      <button type="button" class="a-del">×</button>
+    `;
+    row.querySelector('.a-del').addEventListener('click', () => row.remove());
+    return row;
+  }
+  function openAdmin(){
+    adminRows.innerHTML = '';
+    worksList.forEach(w => adminRows.appendChild(buildAdminRow(w)));
+    adminPanel.classList.add('open');
+  }
+  function collectAdminRows(){
+    return Array.from(adminRows.querySelectorAll('.admin-row')).map(row => ({
+      url: row.querySelector('.a-url').value.trim(),
+      name: row.querySelector('.a-name').value.trim(),
+      thumbnail: row.querySelector('.a-thumb').value.trim(),
+      category: row.querySelector('.a-cat').value
+    })).filter(w => w.url);
+  }
+  if (adminPanel){
+    adminClose.addEventListener('click', () => adminPanel.classList.remove('open'));
+    adminPanel.addEventListener('click', (e) => { if (e.target === adminPanel) adminPanel.classList.remove('open'); });
+    adminAdd.addEventListener('click', () => adminRows.appendChild(buildAdminRow({ url: '', category: 'reels', thumbnail: '', name: '' })));
+    adminSave.addEventListener('click', () => {
+      worksList = collectAdminRows();
+      saveWorks(worksList);
+      renderWorks(worksList);
+      adminPanel.classList.remove('open');
+    });
+    adminReset.addEventListener('click', () => {
+      if (!confirm('هل تريد استرجاع قائمة الفيديوهات الأصلية؟ هيمسح تعديلاتك المحفوظة في المتصفح.')) return;
+      try{ localStorage.removeItem(LS_KEY); } catch(e){}
+      worksList = JSON.parse(JSON.stringify(DEFAULT_WORKS));
+      renderWorks(worksList);
+      openAdmin();
+    });
+    adminExport.addEventListener('click', async () => {
+      let dl = null;
+      try{ dl = (typeof claude !== 'undefined' && claude.use) ? await claude.use('downloads') : null; } catch(e){}
+      if (!dl){ alert('زرار التحميل بيشتغل لما تفتح الصفحة من claude.ai. التعديلات متحفوظة في المتصفح على أي حال.'); return; }
+      const list = collectAdminRows();
+      const clone = document.documentElement.cloneNode(true);
+      const g = clone.querySelector('#works-grid'); if (g) g.innerHTML = '';
+      const vm = clone.querySelector('#video-modal'); if (vm) vm.classList.remove('open');
+      const ap = clone.querySelector('#admin-panel'); if (ap) ap.classList.remove('open');
+      const lp = clone.querySelector('#login-panel'); if (lp) lp.classList.remove('open');
+      let html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      html = html.replace(/const DEFAULT_WORKS = \[[\s\S]*?\];/, 'const DEFAULT_WORKS = ' + JSON.stringify(list, null, 2) + ';');
+      await dl.save({ filename: 'belal-portfolio.html', data: html });
+    });
+
+    // ---- تغيير اليوزر والباسورد ----
+    const passUser = document.getElementById('pass-user');
+    const passNew = document.getElementById('pass-new');
+    const passSave = document.getElementById('pass-save');
+    const passMsg = document.getElementById('pass-msg');
+    passSave.addEventListener('click', () => {
+      const cur = loadCreds();
+      const newUser = passUser.value.trim() || cur.user;
+      const newPass = passNew.value.trim();
+      if (!newPass || newPass.length < 4){
+        passMsg.className = 'login-error';
+        passMsg.textContent = 'اكتب باسورد جديد 4 حروف أو أكتر';
+        return;
+      }
+      saveCreds({ user: newUser, pass: newPass });
+      passMsg.className = 'login-error ok';
+      passMsg.textContent = 'تم تحديث بيانات الدخول في هذا المتصفح ✓';
+      passUser.value = ''; passNew.value = '';
+    });
+  }
 
   // ---- in-site video modal ----
   const modal = document.getElementById('video-modal');
