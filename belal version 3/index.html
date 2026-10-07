@@ -202,7 +202,9 @@
       linear-gradient(135deg,#1b1108,#0a0b0d 60%);
     display:flex;align-items:center;justify-content:center;
     border:1px solid var(--border-soft);
+    cursor:pointer;
   }
+  .player-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
   .play-btn{
     width:64px;height:64px;border-radius:50%;
     background:rgba(255,255,255,.08);
@@ -486,8 +488,9 @@
     </div>
 
     <!-- Google Drive — فيديو تعريفي: ده لينك درايف مؤقت، استبدله بلينك الفيديو التعريفي النهائي بتاعك -->
-    <div class="player reveal">
-      <iframe id="intro-video" src="https://drive.google.com/file/d/1Toy3Ub9grRz4D3pDJvbWyLgzAIOXWyJi/preview" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+    <div class="player reveal" id="intro-player" role="button" tabindex="0" aria-label="Play intro video">
+      <img class="player-thumb" src="https://drive.google.com/thumbnail?id=1Toy3Ub9grRz4D3pDJvbWyLgzAIOXWyJi&sz=w800" alt="" onerror="this.style.display='none'">
+      <div class="w-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
     </div>
   </div>
 </section>
@@ -932,6 +935,14 @@
   modalClose.addEventListener('click', closeVideoModal);
   modal.addEventListener('click', (e)=>{ if(e.target === modal) closeVideoModal(); });
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeVideoModal(); });
+
+  // ---- فيديو الهيرو التعريفي: بيفتح في نفس البلاير الكبير بدل ما يتحط جوه فريم ضيق (كان بيعمل جلتش من درايف) ----
+  const introPlayer = document.getElementById('intro-player');
+  if (introPlayer){
+    const openIntro = () => openVideoModal('https://drive.google.com/file/d/1Toy3Ub9grRz4D3pDJvbWyLgzAIOXWyJi/preview', 9/16);
+    introPlayer.addEventListener('click', openIntro);
+    introPlayer.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') openIntro(); });
+  }
 
   // ---- scroll reveal (reversible: replays every time you scroll past) ----
   const revealEls = Array.from(document.querySelectorAll('.reveal')).filter(el => !el.closest('.hero'));
