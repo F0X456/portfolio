@@ -383,13 +383,12 @@
   .video-modal.open .video-modal-inner{transform:scale(1);}
   .video-modal-inner iframe{width:100%;height:100%;border:0;}
   .video-modal-close{
-    position:absolute;top:-46px;right:0;
-    width:36px;height:36px;border-radius:50%;
-    background:var(--card);border:1px solid var(--border);
+    position:absolute;top:10px;left:10px;z-index:5;cursor:pointer;
+    width:38px;height:38px;border-radius:50%;
+    background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.25);
     display:flex;align-items:center;justify-content:center;
     transition:background .25s ease, transform .25s ease;
   }
-  html[dir="rtl"] .video-modal-close{right:auto;left:0;}
   .video-modal-close:hover{background:var(--accent);transform:rotate(90deg);}
   .video-modal-close svg{width:16px;height:16px;stroke:#fff;stroke-width:2;fill:none;}
 
@@ -631,6 +630,7 @@
       <h3 data-en="Admin Login" data-ar="تسجيل الدخول">Admin Login</h3>
       <button id="login-close" aria-label="Close">×</button>
     </div>
+    <p id="login-hint" class="admin-hint" style="display:none;"></p>
     <input type="text" id="login-user" class="login-input" placeholder="Username" autocomplete="off">
     <input type="password" id="login-pass" class="login-input" placeholder="Password" autocomplete="off">
     <p id="login-error" class="login-error"></p>
@@ -767,13 +767,14 @@
   });
 
   // ---- داشبورد التعديل: إضافة/تعديل/حذف فيديوهات وصور (محمي بيوزر نيم وباسورد) ----
+  // مفيش يوزر/باسورد متخزن في الكود: أول دخول بتحدد بياناتك بنفسك وبتتحفظ في متصفحك بس.
   const LS_AUTH = 'bp_auth_v1';
   function loadCreds(){
     try{
       const raw = localStorage.getItem(LS_AUTH);
       if (raw){ const p = JSON.parse(raw); if (p && p.user && p.pass) return p; }
     } catch(e){}
-    return { user: 'dragon', pass: 'Baroud-12' };
+    return null;
   }
   function saveCreds(c){ try{ localStorage.setItem(LS_AUTH, JSON.stringify(c)); } catch(e){} }
   let isAuthed = false;
@@ -796,12 +797,22 @@
       if (logoClicks.length >= 5){
         logoClicks = [];
         e.preventDefault();
-        if (isAuthed){ openAdmin(); } else { loginError.textContent=''; loginUser.value=''; loginPass.value=''; loginPanel.classList.add('open'); loginUser.focus(); }
+        if (isAuthed){ openAdmin(); return; }
+        loginError.textContent=''; loginUser.value=''; loginPass.value='';
+        const hint = document.getElementById('login-hint');
+        if (hint){ hint.style.display = loadCreds() ? 'none' : 'block'; hint.textContent = 'أول مرة؟ اكتب يوزر نيم وباسورد جديدين هيتحفظوا في متصفحك.'; }
+        loginPanel.classList.add('open'); loginUser.focus();
       }
     });
   }
   function doLogin(){
     const c = loadCreds();
+    if (!c){
+      const nu = loginUser.value.trim(), np = loginPass.value;
+      if (!nu || np.length < 4){ loginError.textContent = 'اكتب يوزر نيم وباسورد (4 حروف على الأقل)'; return; }
+      saveCreds({ user: nu, pass: np });
+      isAuthed = true; loginPanel.classList.remove('open'); openAdmin(); return;
+    }
     if (loginUser.value === c.user && loginPass.value === c.pass){
       isAuthed = true;
       loginPanel.classList.remove('open');
@@ -894,7 +905,7 @@
     const passMsg = document.getElementById('pass-msg');
     passSave.addEventListener('click', () => {
       const cur = loadCreds();
-      const newUser = passUser.value.trim() || cur.user;
+      const newUser = passUser.value.trim() || (cur && cur.user) || 'admin';
       const newPass = passNew.value.trim();
       if (!newPass || newPass.length < 4){
         passMsg.className = 'login-error';
